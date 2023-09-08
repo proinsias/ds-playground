@@ -3,12 +3,12 @@ import zipfile
 
 import requests
 
-import constants as hdc
+import heart_disease.constants as hdc  # FIXME: Is this right?
 
 
 def get_dataset() -> None:
-    if all((file.is_file() for file in hdc.DATA_PATHS)):
-        print("Data files already downloaded.")  # FIXME: Switch to logging.
+    if all((file.is_file() for file in hdc.DATA_PATHS.values())):
+        print("Data files already downloaded.")  # FIXME: Switch to logging or loguru or?
         return
 
     # Ensure the output directory exists, create it if it doesn't.

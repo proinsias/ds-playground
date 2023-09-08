@@ -10,17 +10,18 @@ PROCESSED_DATA_DIR_PATH = DATA_DIR_PATH / "processed"
 RAW_DATA_DIR_PATH = DATA_DIR_PATH / "raw"
 
 # Cleveland Clinic Foundation.
-CLEVELAND_DATA_PATH = RAW_DATA_DIR_PATH / "processed.cleveland.data"
+CLEVELAND_STR = "cleveland"
 # Hungarian Institute of Cardiology, Budapest.
-HUNGARIAN_DATA_PATH = RAW_DATA_DIR_PATH / "reprocessed.hungarian.data"
+HUNGARIAN_STR = "hungarian"
 # University Hospital, Zurich, Switzerland.
-SWITZERLAND_DATA_PATH = RAW_DATA_DIR_PATH / "processed.switzerland.data"
+SWITZERLAND_STR = "switzerland"
 # V.A. Medical Center, Long Beach, CA.
-VA_DATA_PATH = RAW_DATA_DIR_PATH / "processed.va.data"
+VA_STR = "va"
 
-DATA_PATHS = (
-    CLEVELAND_DATA_PATH,
-    HUNGARIAN_DATA_PATH,
-    SWITZERLAND_DATA_PATH,
-    VA_DATA_PATH,
-)
+DATA_PATHS = {
+    CLEVELAND_STR: RAW_DATA_DIR_PATH / f"processed.{CLEVELAND_STR}.data",
+    # Note this is the reprocessed data.
+    HUNGARIAN_STR: RAW_DATA_DIR_PATH / f"reprocessed.{HUNGARIAN_STR}.data",
+    SWITZERLAND_STR: RAW_DATA_DIR_PATH / f"processed.{SWITZERLAND_STR}.data",
+    VA_STR: RAW_DATA_DIR_PATH / f"processed.{VA_STR}.data",
+}
