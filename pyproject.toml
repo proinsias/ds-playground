@@ -6,7 +6,8 @@ description = "Demo machine learning project using the UCI Heart Disease dataset
 authors = ["Francis T. O'Donovan <proinsias@users.noreply.github.com>"]
 license = "Unlicense"
 readme = "README.md"
-packages = [{include = "heart_disease"}]
+packages = [{include = "heart_disease"}]  # FIXME: Why doesn't this allow me to run scripts using poetry run python3 file.py?
+# FIXME: I had to use export PYTHONPATH='heart_disease'
 repository = "https://github.com/proinsias/heart-disease"
 # documentation = "{{ repository_provider }}/{{ repository_namespace }}/{{ package_name_py }}/docs"
 classifiers = [
@@ -40,6 +41,7 @@ heart-disease = "heart_disease.main:app"
 # $ poetry add package>=1.2.3
 python = "^3.10"
 jupyterlab = "^4.0.5"
+requests = "^2.31.0"
 
 [tool.poetry.group.dev.dependencies]
 # Add packages to this section via:

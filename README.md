@@ -35,9 +35,7 @@ Demo machine learning project using the UCI Heart Disease dataset.
     ├── reports            <- Generated analysis as HTML, PDF, LaTeX, etc.
     │   └── figures        <- Generated graphics and figures to be used in reporting
     │
-    ├── setup.py           <- makes project pip installable (pip install -e .) so src can be imported
-    ├── src                <- Source code for use in this project.
-    │   ├── __init__.py    <- Makes src a Python module
+    ├── heart_disease      <- Source code for use in this project.
     │   │
     │   ├── data           <- Scripts to download or generate data
     │   │   └── make_dataset.py
