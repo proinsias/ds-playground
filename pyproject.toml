@@ -1,0 +1,94 @@
+[tool.poetry]
+# Keep these in sync with CHANGELOG.md and the main __init__.py file.
+name = "heart-disease"
+version = "0.1.0"
+description = "Demo machine learning project using the UCI Heart Disease dataset"
+authors = ["Francis T. O'Donovan <proinsias@users.noreply.github.com>"]
+license = "Unlicense"
+readme = "README.md"
+packages = [{include = "heart_disease"}]
+repository = "https://github.com/proinsias/heart-disease"
+# documentation = "{{ repository_provider }}/{{ repository_namespace }}/{{ package_name_py }}/docs"
+classifiers = [
+    "Environment :: Other Environment",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Education",
+    "Intended Audience :: Healthcare Industry",
+    "License :: OSI Approved :: The Unlicense (Unlicense)",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+    'Programming Language :: Python :: 3.10',
+    'Programming Language :: Python :: 3.11',
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Education",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+keywords = ["heart", "disease", "healthcare", "machine-learning", "data-science"]
+include = ["AUTHORS", "LICENSE", "README.md", "CHANGELOG.md"]
+
+[tool.poetry.urls]
+"Bug Tracker" = "https://proinsias.github.io/heart-disease/issues"
+"Homepage" = "https://proinsias.github.io/heart-disease/"
+
+[tool.poetry.scripts]
+# Note the use of underscores instead of hyphens in the module name!
+heart-disease = "heart_disease.main:app"
+
+[tool.poetry.dependencies]
+# Add packages to this section via:
+# $ poetry add package>=1.2.3
+python = "^3.10"
+
+[tool.poetry.group.dev.dependencies]
+# Add packages to this section via:
+# $ poetry add package>=1.2.3 --group dev
+black = "^23.3.0"
+darglint = "^1.8.1"
+mypy = "^1.2.0"
+pytest = "^7.3.1"
+pytest-black = "^0.3.12"
+pylint = "^2.17.2"
+toml = "^0.10.2"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.darglint]
+docstring_style = 'google'  # Default. Alternatives are 'sphinx' and 'numpy'.
+strictness = 'full'  # Default. Alternatives are 'short' and 'long'.
+
+[tool.isort]
+# Make sure isort and black work together.
+profile = "black"
+# line_length = 120  # Use black profile instead.
+# Vertical Hanging Indent multi-line format.
+# multi_line_output = 3  # Use black profile instead.
+# Don't forces all `from imports` to appear on their own line.
+force_single_line = false
+# Use parentheses for line continuation on length limit instead of slashes.
+# use_parentheses = true  # Use black profile instead.
+# Ensures that if a star import is present, nothing else is imported from that namespace.
+combine_star = true
+# Includes a trailing comma on multi line imports that include parentheses.
+# include_trailing_comma = true  # Use black profile instead.
+# Force all imports to be sorted alphabetically within a section.
+force_alphabetical_sort_within_sections = true
+# Causes all non-indented imports to float to the top of the file having its imports sorted
+# (immediately below the top of file comment).
+float_to_top = true
+color_output = true
+
+[tool.pytest.ini_options]
+# Add command line options to pytest.
+# doctest-modules: run doctests from docstrings in all python modules.
+# durations: print duration of slowest tests
+# verbose: increase verbosity.
+addopts = "--doctest-modules --durations=0 --durations-min=1.0 --verbose"
+# Enable log display during test run.
+log_cli = true
+testpaths = [
+    "heart_disease",
+    "tests",
+]
