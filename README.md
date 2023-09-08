@@ -2,7 +2,7 @@
 
 Demo machine learning project using the UCI Heart Disease dataset.
 
-[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/proinsias/heart-disease)
+[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/proinsias/heart-disease?quickstart=1)
 
 ## Table of contents
 
