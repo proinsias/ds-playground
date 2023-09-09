@@ -11,14 +11,15 @@
     "vscode": {
       "extensions": [
         // FIXME: Setup these.
-        "yzhang.markdown-all-in-one",
-        "streetsidesoftware.code-spell-checker",
-        "DavidAnson.vscode-markdownlint",
-        "shd101wyy.markdown-preview-enhanced",
         "bierner.github-markdown-preview",
-        "wakatime.vscode-wakatime",
+        "DavidAnson.vscode-markdownlint",
         "ms-python.python",
-        "ms-python.vscode-pylance"
+        "ms-python.vscode-pylance",
+        "ms-toolsai.jupyter",
+        "shd101wyy.markdown-preview-enhanced",
+        "streetsidesoftware.code-spell-checker",
+        "yzhang.markdown-all-in-one",
+        "wakatime.vscode-wakatime"
       ]
     }
   },
@@ -32,6 +33,10 @@
   // Open port 3000 by default
   // "forwardPorts": [3000],
 
+  //  "hostRequirements": {
+  //    "cpus": 4
+  //  },
+
   // Run Bash script in .devcontainer directory.
   // "postCreateCommand": "/bin/bash ./.devcontainer/post-create.sh > ~/post-create.log",
   // Use 'postCreateCommand' to run commands after the container is created.
@@ -44,6 +49,8 @@
   //  "settings": {
   //    "peacock.remoteColor": "#0078D7"
   //  },
+
+  //  "waitFor": "onCreateCommand",
 
   // docker-compose.
   //  "name": "[Optional] Your project name here",
