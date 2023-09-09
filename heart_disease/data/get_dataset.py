@@ -42,7 +42,11 @@ def get_dataset() -> None:
 
 
 def validate_and_combine_dataset() -> pd.DataFrame:
-    # FIXME: Add docstring.
+    """Combine data from different sites after validation.
+    
+    This validation is based on the metadata provided in the
+    `heart-disease-names` file extracted from the original zip file.
+    """
     cleveland_df = pd.read_csv(
         filepath_or_buffer=hdc.DATA_PATHS[hdc.CLEVELAND_STR],
         na_values=hdc.NA_VALUES,
