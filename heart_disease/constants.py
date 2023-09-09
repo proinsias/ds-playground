@@ -25,3 +25,22 @@ DATA_PATHS = {
     SWITZERLAND_STR: RAW_DATA_DIR_PATH / f"processed.{SWITZERLAND_STR}.data",
     VA_STR: RAW_DATA_DIR_PATH / f"processed.{VA_STR}.data",
 }
+
+DATA_COLUMNS = (
+    "age",
+    "sex",   
+    "cp",
+    "trestbps",
+    "chol",
+    "fbs",
+    "restecg",
+    "thalach",
+    "exang",
+    "oldpeak",
+    "slope",
+    "ca",
+    "thal",
+    "num",  # The predicted attribute.
+)
+
+NA_VALUES = (-9.0, "?")
