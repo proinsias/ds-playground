@@ -1,0 +1,54 @@
+{
+  // Supports JSON with Comments (jsonc)!
+  // See https://containers.dev/implementors/json_reference/ .
+
+  // Use the standard CodeSpaces image as base image for your own custom one.
+  // "build": { "dockerfile": "Dockerfile" },
+  "image": "mcr.microsoft.com/devcontainers/universal:2-linux",
+
+  // Install needed extensions.
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        // FIXME: Setup these.
+        "yzhang.markdown-all-in-one",
+        "streetsidesoftware.code-spell-checker",
+        "DavidAnson.vscode-markdownlint",
+        "shd101wyy.markdown-preview-enhanced",
+        "bierner.github-markdown-preview",
+        "wakatime.vscode-wakatime",
+        "ms-python.python",
+        "ms-python.vscode-pylance"
+      ]
+    }
+  },
+
+  // Features to add to the dev container. More info: https://containers.dev/features.
+  "features": {
+    // Get the latest git version.
+    "ghcr.io/devcontainers/features/git:1": {}
+  }
+
+  // Open port 3000 by default
+  // "forwardPorts": [3000],
+
+  // Run Bash script in .devcontainer directory.
+  // "postCreateCommand": "/bin/bash ./.devcontainer/post-create.sh > ~/post-create.log",
+  // Use 'postCreateCommand' to run commands after the container is created.
+  // "postCreateCommand": "pip3 install --user -r requirements.txt",
+
+  // Uncomment to connect as root instead. More info: https://aka.ms/dev-containers-non-root.
+  // "remoteUser": "root"
+
+  // Adds VS Code settings.json values into the environment.
+  //  "settings": {
+  //    "peacock.remoteColor": "#0078D7"
+  //  },
+
+  // docker-compose.
+  //  "name": "[Optional] Your project name here",
+  //  "dockerComposeFile": "../docker-compose.yml",
+  //  "service": "the-name-of-the-service-you-want-to-work-with-in-vscode",
+  //  "workspaceFolder": "/default/workspace/path/in/container/to/open",
+  //  "shutdownAction": "stopCompose"
+}
