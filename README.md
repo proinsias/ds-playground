@@ -1,6 +1,7 @@
-# heart-disease
+# Heart Disease (heart-disease)
 
-Demo machine learning project using the UCI Heart Disease dataset.
+Demo machine learning project using the
+University of California Irvine (UCI) Heart Disease dataset.
 
 [![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/proinsias/heart-disease?quickstart=1)
 
@@ -8,10 +9,14 @@ Demo machine learning project using the UCI Heart Disease dataset.
 
 <!-- toc -->
 
-- [Project organization](#project-organization)
-- [Updating the table of contents of this file](#updating-the-table-of-contents-of-this-file)
+-   [Project organization](#project-organization)
+-   [Updating the table of contents of this file](#updating-the-table-of-contents-of-this-file)
 
 <!-- tocstop -->
+
+## Additional documentation
+
+Full documentation can be found here: [./docs](./docs).
 
 ## Project organization
 
@@ -68,11 +73,11 @@ You can update the TOC using:
 markdown-toc -i README.md
 ```
 
-## Acknowledgements
+## Acknowledgments
 
 The authors of the databases have requested:
 
-      ...that any publications resulting from the use of the data include the 
+      ...that any publications resulting from the use of the data include the
       names of the principal investigator responsible for the data collection
       at each institution.  They would be:
 
@@ -80,5 +85,4 @@ The authors of the databases have requested:
        2. University Hospital, Zurich, Switzerland: William Steinbrunn, M.D.
        3. University Hospital, Basel, Switzerland: Matthias Pfisterer, M.D.
        4. V.A. Medical Center, Long Beach and Cleveland Clinic Foundation:
-	  Robert Detrano, M.D., Ph.D.
-
+      Robert Detrano, M.D., Ph.D.
