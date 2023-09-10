@@ -38,11 +38,13 @@ heart-disease = "heart_disease.main:app"
 [tool.poetry.dependencies]
 # Add packages to this section via:
 # $ poetry add package>=1.2.3
-python = "^3.10"
-jupyterlab = "^4.0.5"
-matplotlib = "^3.7.2"
-pandas = "^2.1.0"
-requests = "^2.31.0"
+python = ">=3.10,<3.11"  # For pandas-profiling.
+jupyterlab = "*"
+matplotlib = "*"
+missingno = "*"
+pandas = "*"
+pandas-profiling = "^3.6.6"
+requests = "*"
 
 [tool.poetry.group.dev.dependencies]
 # Add packages to this section via:
