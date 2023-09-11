@@ -10,17 +10,24 @@
   "customizations": {
     "vscode": {
       "extensions": [
-        // FIXME: Setup these.
-        "bierner.github-markdown-preview",
-        "DavidAnson.vscode-markdownlint",
-        "ms-python.python",
-        "ms-python.vscode-pylance",
-        "ms-toolsai.jupyter",
-        "shd101wyy.markdown-preview-enhanced",
-        "streetsidesoftware.code-spell-checker",
-        "yzhang.markdown-all-in-one",
-        "wakatime.vscode-wakatime"
-      ]
+		"bierner.github-markdown-preview",
+		"charliermarsh.ruff",
+		"DavidAnson.vscode-markdownlint",
+		"ms-azuretools.vscode-docker",
+		"ms-python.black-formatter",
+		"ms-python.python",
+		"ms-python.vscode-pylance",
+		"ms-toolsai.datawrangler",
+		"ms-toolsai.jupyter",
+		"ms-toolsai.jupyter-keymap",
+		"ms-toolsai.jupyter-renderers",
+		"ms-toolsai.vscode-jupyter-slideshow",
+		"ms-toolsai.vscode-jupyter-cell-tags",
+		"shd101wyy.markdown-preview-enhanced",
+		"streetsidesoftware.code-spell-checker",
+		"yzhang.markdown-all-in-one",
+		"wakatime.vscode-wakatime"
+	]
     }
   },
 
