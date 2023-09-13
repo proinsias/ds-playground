@@ -1,9 +1,11 @@
 # Heart Disease (heart-disease)
 
-Demo machine learning project using the
+Sandbox machine learning classification project using the
 University of California Irvine (UCI) Heart Disease dataset.
 
-[![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/proinsias/heart-disease?quickstart=1)
+This is my playground where I try out new tools and approaches.
+
+<!-- FIXME: Add badges from template. -->
 
 ## Table of contents
 
@@ -19,6 +21,8 @@ University of California Irvine (UCI) Heart Disease dataset.
 Full documentation can be found here: [./docs](./docs).
 
 ## Project organization
+
+<!-- FIXME: Convert to mermaid? -->
 
     ├── LICENSE
     ├── Makefile           <- Makefile with commands like `make data` or `make train`
@@ -62,16 +66,10 @@ Full documentation can be found here: [./docs](./docs).
 
 <p><small>Project based on the <a target="_blank" href="https://drivendata.github.io/cookiecutter-data-science/">cookiecutter data science project template</a>. #cookiecutterdatascience</small></p>
 
-## Updating the table of contents of this file
+## Contributions
 
-We use [markdown-toc](https://github.com/jonschlinkert/markdown-toc)
-to automatically generate the table of contents for this file.
-You can update the TOC using:
-
-```bash
-# npm install --global markdown-toc
-markdown-toc -i README.md
-```
+-   [![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://codespaces.new/proinsias/heart-disease?quickstart=1)
+-   [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/betatim/binderlyzer/master)
 
 ## Acknowledgments
 
@@ -86,3 +84,14 @@ The authors of the databases have requested:
        3. University Hospital, Basel, Switzerland: Matthias Pfisterer, M.D.
        4. V.A. Medical Center, Long Beach and Cleveland Clinic Foundation:
       Robert Detrano, M.D., Ph.D.
+
+## Updating the table of contents of this file
+
+We use [markdown-toc](https://github.com/jonschlinkert/markdown-toc)
+to automatically generate the table of contents for this file.
+You can update the TOC using:
+
+```bash
+# npm install --global markdown-toc
+markdown-toc -i README.md
+```
