@@ -11,8 +11,13 @@ This is my playground where I try out new tools and approaches.
 
 <!-- toc -->
 
--   [Project organization](#project-organization)
--   [Updating the table of contents of this file](#updating-the-table-of-contents-of-this-file)
+- [Heart Disease (heart-disease)](#heart-disease-heart-disease)
+  - [Table of contents](#table-of-contents)
+  - [Additional documentation](#additional-documentation)
+  - [Project organization](#project-organization)
+  - [Contributions](#contributions)
+  - [Acknowledgments](#acknowledgments)
+  - [Updating the table of contents of this file](#updating-the-table-of-contents-of-this-file)
 
 <!-- tocstop -->
 
@@ -84,6 +89,10 @@ The authors of the databases have requested:
        3. University Hospital, Basel, Switzerland: Matthias Pfisterer, M.D.
        4. V.A. Medical Center, Long Beach and Cleveland Clinic Foundation:
       Robert Detrano, M.D., Ph.D.
+
+The following sources have also been helpful inspiration:
+
+* [Project Group 9 ML Project on Kaggle](https://www.kaggle.com/code/doraakbulut/project-group-9-ml-project).
 
 ## Updating the table of contents of this file
 

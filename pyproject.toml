@@ -44,6 +44,7 @@ matplotlib = "*"
 missingno = "*"
 pandas = "*"
 requests = "*"
+seaborn = "*"
 ydata-profiling = "*"
 ipywidgets = "^8.1.0"
 
