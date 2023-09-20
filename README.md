@@ -93,6 +93,7 @@ The authors of the databases have requested:
 The following sources have also been helpful inspiration:
 
 * [Project Group 9 ML Project on Kaggle](https://www.kaggle.com/code/doraakbulut/project-group-9-ml-project).
+* [Exploratory Data Analysis on Heart Disease UCI data set](https://towardsdatascience.com/exploratory-data-analysis-on-heart-disease-uci-data-set-ae129e47b323).
 
 ## Updating the table of contents of this file
 
