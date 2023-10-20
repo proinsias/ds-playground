@@ -11,13 +11,13 @@ This is my playground where I try out new tools and approaches.
 
 <!-- toc -->
 
-- [Heart Disease (heart-disease)](#heart-disease-heart-disease)
-  - [Table of contents](#table-of-contents)
-  - [Additional documentation](#additional-documentation)
-  - [Project organization](#project-organization)
-  - [Contributions](#contributions)
-  - [Acknowledgments](#acknowledgments)
-  - [Updating the table of contents of this file](#updating-the-table-of-contents-of-this-file)
+-   [Heart Disease (heart-disease)](#heart-disease-heart-disease)
+    -   [Table of contents](#table-of-contents)
+    -   [Additional documentation](#additional-documentation)
+    -   [Project organization](#project-organization)
+    -   [Contributions](#contributions)
+    -   [Acknowledgments](#acknowledgments)
+    -   [Updating the table of contents of this file](#updating-the-table-of-contents-of-this-file)
 
 <!-- tocstop -->
 
@@ -92,8 +92,9 @@ The authors of the databases have requested:
 
 The following sources have also been helpful inspiration:
 
-* [Project Group 9 ML Project on Kaggle](https://www.kaggle.com/code/doraakbulut/project-group-9-ml-project).
-* [Exploratory Data Analysis on Heart Disease UCI data set](https://towardsdatascience.com/exploratory-data-analysis-on-heart-disease-uci-data-set-ae129e47b323).
+-   [Project Group 9 ML Project on Kaggle](https://www.kaggle.com/code/doraakbulut/project-group-9-ml-project).
+-   [Exploratory Data Analysis on Heart Disease UCI data set](https://towardsdatascience.com/exploratory-data-analysis-on-heart-disease-uci-data-set-ae129e47b323).
+-   [Predicting Heart Disease (Plotly)](https://www.kaggle.com/code/excalibur7/predicting-heart-disease-plotly).
 
 ## Updating the table of contents of this file
 
