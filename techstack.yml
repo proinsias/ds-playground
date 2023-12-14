@@ -1,11 +1,11 @@
 repo_name: proinsias/heart-disease
-report_id: ba6c73593e1bb57f8a72ccfcbd5f7e3c
+report_id: c8bf3f87901947a3a1d165ca417148ab
 repo_type: Public
-timestamp: '2023-11-13T01:27:23+00:00'
+timestamp: '2023-12-14T10:33:57+00:00'
 requested_by: proinsias
 provider: github
 branch: main
-detected_tools_count: 9
+detected_tools_count: 13
 tools:
 - name: Python
   description: A clear and powerful object-oriented programming language, comparable
@@ -17,6 +17,17 @@ tools:
   sub_category: Languages
   image_url: https://img.stackshare.io/service/993/pUBY5pVj.png
   detection_source: Repo Metadata
+- name: pgvector
+  description: Open-source vector similarity search for Postgres
+  website_url: https://github.com/pgvector/pgvector/
+  open_source: false
+  hosted_saas: false
+  category: Data Stores
+  sub_category: Database Tools
+  image_url: https://img.stackshare.io/service/109221/default_b888cdf5617d936aa6aacf130911906955508639.png
+  detection_source: project-words.txt
+  last_updated_by: Francis T. O'Donovan
+  last_updated_on: 2023-09-09 02:46:24.000000000 Z
 - name: Git
   description: Fast, scalable, distributed revision control system
   website_url: http://git-scm.com/
@@ -47,9 +58,34 @@ tools:
   sub_category: Data Science Notebooks
   image_url: https://img.stackshare.io/service/4190/fGBUdNf__400x400.jpg
   detection_source: Repo Metadata
+- name: LangChain
+  description: Build AI apps with LLMs through composability
+  website_url: https://github.com/hwchase17/langchain
+  open_source: true
+  hosted_saas: false
+  category: Communications
+  sub_category: Large Language Model Tools
+  image_url: https://img.stackshare.io/service/48790/default_5b6c6b73f1ff3775c85d2a1ba954cb87e30cbf13.jpg
+  detection_source: project-words.txt
+  last_updated_by: Francis T. O'Donovan
+  last_updated_on: 2023-09-09 02:46:24.000000000 Z
+- name: ipywidgets
+  description: IPython HTML widgets for Jupyter
+  package_url: https://pypi.org/project/ipywidgets
+  version: 8.1.1
+  license: BSD-3-Clause
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: PyPI Packages
+  image_url: https://img.stackshare.io/package/pypi/image.png
+  detection_source_url: https://github.com/proinsias/heart-disease/blob/main/poetry.lock
+  detection_source: pyproject.toml
+  last_updated_by: Francis T. O'Donovan
+  last_updated_on: 2023-09-20 02:00:31.000000000 Z
 - name: jupyterlab
   description: The JupyterLab notebook server extension
-  package_url: https://pypi.org/jupyterlab
+  package_url: https://pypi.org/project/jupyterlab
   version: 4.0.6
   license: BSD-3-Clause
   open_source: true
@@ -57,13 +93,13 @@ tools:
   category: Libraries
   sub_category: PyPI Packages
   image_url: https://img.stackshare.io/package/20376/default_e6c4d6b6295b7d6934a5e16b2a16a7aa07991d65.png
-  detection_source_url: poetry.lock
+  detection_source_url: https://github.com/proinsias/heart-disease/blob/main/poetry.lock
   detection_source: pyproject.toml
   last_updated_by: Francis T. O'Donovan
   last_updated_on: 2023-09-20 02:00:31.000000000 Z
 - name: matplotlib
   description: Python plotting package
-  package_url: https://pypi.org/matplotlib
+  package_url: https://pypi.org/project/matplotlib
   version: 3.8.0
   license: Python-2.0
   open_source: true
@@ -71,13 +107,13 @@ tools:
   category: Libraries
   sub_category: PyPI Packages
   image_url: https://img.stackshare.io/package/19853/default_3fbfa1d88b4408e903227ac391490e8efb8dea58.png
-  detection_source_url: poetry.lock
+  detection_source_url: https://github.com/proinsias/heart-disease/blob/main/poetry.lock
   detection_source: pyproject.toml
   last_updated_by: Francis T. O'Donovan
   last_updated_on: 2023-09-20 02:00:31.000000000 Z
 - name: pandas
   description: Powerful data structures for data analysis
-  package_url: https://pypi.org/pandas
+  package_url: https://pypi.org/project/pandas
   version: 2.0.3
   license: BSD-3-Clause
   open_source: true
@@ -85,13 +121,13 @@ tools:
   category: Libraries
   sub_category: PyPI Packages
   image_url: https://img.stackshare.io/package/19837/default_85689b353a3a9409328e253ea28d859d29151e0c.png
-  detection_source_url: poetry.lock
+  detection_source_url: https://github.com/proinsias/heart-disease/blob/main/poetry.lock
   detection_source: pyproject.toml
   last_updated_by: Francis T. O'Donovan
   last_updated_on: 2023-09-10 21:26:51.000000000 Z
 - name: plotly
   description: An open-source, interactive graphing library for Python
-  package_url: https://pypi.org/plotly
+  package_url: https://pypi.org/project/plotly
   version: 5.17.0
   license: MIT
   open_source: true
@@ -99,13 +135,13 @@ tools:
   category: Libraries
   sub_category: PyPI Packages
   image_url: https://img.stackshare.io/package/20062/default_7d86b2789b7e98a881e37db483c09c6a1aa3e995.png
-  detection_source_url: poetry.lock
+  detection_source_url: https://github.com/proinsias/heart-disease/blob/main/poetry.lock
   detection_source: pyproject.toml
   last_updated_by: Francis T. O'Donovan
   last_updated_on: 2023-09-20 02:00:31.000000000 Z
 - name: requests
   description: Python HTTP for Humans
-  package_url: https://pypi.org/requests
+  package_url: https://pypi.org/project/requests
   version: 2.31.0
   license: Apache-2.0
   open_source: true
@@ -113,7 +149,21 @@ tools:
   category: Libraries
   sub_category: PyPI Packages
   image_url: https://img.stackshare.io/package/19826/default_d7c684bf2673f008a9f02ac93901229297a22d7e.png
-  detection_source_url: poetry.lock
+  detection_source_url: https://github.com/proinsias/heart-disease/blob/main/poetry.lock
   detection_source: pyproject.toml
   last_updated_by: Francis T. O'Donovan
   last_updated_on: 2023-09-10 21:26:51.000000000 Z
+- name: seaborn
+  description: 'Seaborn: statistical data visualization'
+  package_url: https://pypi.org/project/seaborn
+  version: 0.12.2
+  license: BSD-1-Clause
+  open_source: true
+  hosted_saas: false
+  category: Libraries
+  sub_category: PyPI Packages
+  image_url: https://img.stackshare.io/package/pypi/image.png
+  detection_source_url: https://github.com/proinsias/heart-disease/blob/main/poetry.lock
+  detection_source: pyproject.toml
+  last_updated_by: Francis T. O'Donovan
+  last_updated_on: 2023-09-20 01:59:59.000000000 Z
