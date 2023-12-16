@@ -55,7 +55,6 @@ ydata-profiling = "*"
 absolufy-imports = "*"
 add-trailing-comma = "*"
 auto-walrus = "*"
-black = "*"
 blacken-docs = "*"
 darglint = "*"
 flynt = "*"
@@ -90,11 +89,6 @@ build-backend = "poetry.core.masonry.api"
 [tool.bandit.assert_used]
 # skips = ['*_test.py', '*test_*.py', '*unittest.py']
 
-[tool.black]
-# extend-exclude = 'shared'
-# skip-string-normalization = true
-# target-version = ['py38']
-
 [tool.darglint]
 docstring_style = 'sphinx'  # Alternatives are 'google', 'sphinx' and 'numpy'.
 strictness = 'full'  # Default. Alternatives are 'short' and 'long'.
@@ -103,27 +97,6 @@ strictness = 'full'  # Default. Alternatives are 'short' and 'long'.
 recursive = true
 wrap-descriptions = 120
 wrap-summaries = 120
-
-[tool.isort]
-# Make sure isort and black work together.
-profile = "black"
-# line_length = 120  # Use black profile instead.
-# Vertical Hanging Indent multi-line format.
-# multi_line_output = 3  # Use black profile instead.
-# Don't forces all `from imports` to appear on their own line.
-force_single_line = false
-# Use parentheses for line continuation on length limit instead of slashes.
-# use_parentheses = true  # Use black profile instead.
-# Ensures that if a star import is present, nothing else is imported from that namespace.
-combine_star = true
-# Includes a trailing comma on multi line imports that include parentheses.
-# include_trailing_comma = true  # Use black profile instead.
-# Force all imports to be sorted alphabetically within a section.
-force_alphabetical_sort_within_sections = true
-# Causes all non-indented imports to float to the top of the file having its imports sorted
-# (immediately below the top of file comment).
-float_to_top = true
-color_output = true
 
 [tool.pytest.ini_options]
 # Add command line options to pytest.
