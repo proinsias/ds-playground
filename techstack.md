@@ -4,9 +4,9 @@
 proinsias/heart-disease is built on the following main stack:
 
 - [Python](https://www.python.org) – Languages
+- [pgvector](https://github.com/pgvector/pgvector/) – Database Tools
 - [Jupyter](http://jupyter.org) – Data Science Notebooks
 - [LangChain](https://github.com/hwchase17/langchain) – Large Language Model Tools
-- [pgvector](https://github.com/pgvector/pgvector/) – Database Tools
 
 Full tech stack [here](/techstack.md)
 
@@ -17,9 +17,9 @@ Full tech stack [here](/techstack.md)
 proinsias/heart-disease is built on the following main stack:
 
 - <img width='25' height='25' src='https://img.stackshare.io/service/993/pUBY5pVj.png' alt='Python'/> [Python](https://www.python.org) – Languages
+- <img width='25' height='25' src='https://img.stackshare.io/service/109221/default_b888cdf5617d936aa6aacf130911906955508639.png' alt='pgvector'/> [pgvector](https://github.com/pgvector/pgvector/) – Database Tools
 - <img width='25' height='25' src='https://img.stackshare.io/service/4190/fGBUdNf__400x400.jpg' alt='Jupyter'/> [Jupyter](http://jupyter.org) – Data Science Notebooks
 - <img width='25' height='25' src='https://img.stackshare.io/service/48790/default_5b6c6b73f1ff3775c85d2a1ba954cb87e30cbf13.jpg' alt='LangChain'/> [LangChain](https://github.com/hwchase17/langchain) – Large Language Model Tools
-- <img width='25' height='25' src='https://img.stackshare.io/service/109221/default_b888cdf5617d936aa6aacf130911906955508639.png' alt='pgvector'/> [pgvector](https://github.com/pgvector/pgvector/) – Database Tools
 
 Full tech stack [here](/techstack.md)
 
@@ -30,7 +30,7 @@ Full tech stack [here](/techstack.md)
 # Tech Stack File
 ![](https://img.stackshare.io/repo.svg "repo") [proinsias/heart-disease](https://github.com/proinsias/heart-disease)![](https://img.stackshare.io/public_badge.svg "public")
 <br/><br/>
-|13<br/>Tools used|01/05/24 <br/>Report generated|
+|13<br/>Tools used|02/29/24 <br/>Report generated|
 |------|------|
 </div>
 
@@ -110,7 +110,7 @@ Full tech stack [here](/techstack.md)
 |NAME|VERSION|LAST UPDATED|LAST UPDATED BY|LICENSE|VULNERABILITIES|
 |:------|:------|:------|:------|:------|:------|
 |[ipywidgets](https://pypi.org/project/ipywidgets)|v8.1.1|09/20/23|Francis T. O'Donovan |BSD-3-Clause|N/A|
-|[jupyterlab](https://pypi.org/project/jupyterlab)|v4.0.6|09/20/23|Francis T. O'Donovan |BSD-3-Clause|N/A|
+|[jupyterlab](https://pypi.org/project/jupyterlab)|v4.0.6|09/20/23|Francis T. O'Donovan |BSD-3-Clause|[CVE-2024-22421](https://github.com/advisories/GHSA-44cc-43rp-5947) (High)<br/>[CVE-2024-22420](https://github.com/advisories/GHSA-4m77-cmpx-vjc4) (Moderate)|
 |[matplotlib](https://pypi.org/project/matplotlib)|v3.8.0|09/20/23|Francis T. O'Donovan |Python-2.0|N/A|
 |[pandas](https://pypi.org/project/pandas)|v2.0.3|09/10/23|Francis T. O'Donovan |BSD-3-Clause|N/A|
 |[plotly](https://pypi.org/project/plotly)|v5.17.0|09/20/23|Francis T. O'Donovan |MIT|N/A|
