@@ -2,7 +2,7 @@ repo_name: proinsias/heart-disease
 report_id: ba6c73593e1bb57f8a72ccfcbd5f7e3c
 version: 0.1
 repo_type: Public
-timestamp: '2024-01-05T08:47:01+00:00'
+timestamp: '2024-02-29T18:42:01+00:00'
 requested_by: proinsias
 provider: github
 branch: main
@@ -104,6 +104,19 @@ tools:
   detection_source: pyproject.toml
   last_updated_by: Francis T. O'Donovan
   last_updated_on: 2023-09-20 02:00:31.000000000 Z
+  vulnerabilities:
+  - name: JupyterLab vulnerable to potential authentication and CSRF tokens leak
+    cve_id: CVE-2024-22421
+    cve_url: https://github.com/advisories/GHSA-44cc-43rp-5947
+    detected_date: Jan 20
+    severity: high
+    first_patched: 4.0.11
+  - name: JupyterLab vulnerable to SXSS in Markdown Preview
+    cve_id: CVE-2024-22420
+    cve_url: https://github.com/advisories/GHSA-4m77-cmpx-vjc4
+    detected_date: Jan 20
+    severity: moderate
+    first_patched: 4.0.11
 - name: matplotlib
   description: Python plotting package
   package_url: https://pypi.org/project/matplotlib
