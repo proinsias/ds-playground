@@ -1,7 +1,8 @@
 repo_name: proinsias/heart-disease
-report_id: c8bf3f87901947a3a1d165ca417148ab
+report_id: ba6c73593e1bb57f8a72ccfcbd5f7e3c
+version: 0.1
 repo_type: Public
-timestamp: '2023-12-14T10:33:57+00:00'
+timestamp: '2024-02-29T18:42:01+00:00'
 requested_by: proinsias
 provider: github
 branch: main
@@ -16,6 +17,7 @@ tools:
   category: Languages & Frameworks
   sub_category: Languages
   image_url: https://img.stackshare.io/service/993/pUBY5pVj.png
+  detection_source_url: https://github.com/proinsias/heart-disease
   detection_source: Repo Metadata
 - name: pgvector
   description: Open-source vector similarity search for Postgres
@@ -25,6 +27,7 @@ tools:
   category: Data Stores
   sub_category: Database Tools
   image_url: https://img.stackshare.io/service/109221/default_b888cdf5617d936aa6aacf130911906955508639.png
+  detection_source_url: https://github.com/proinsias/heart-disease/blob/main/project-words.txt
   detection_source: project-words.txt
   last_updated_by: Francis T. O'Donovan
   last_updated_on: 2023-09-09 02:46:24.000000000 Z
@@ -36,6 +39,7 @@ tools:
   category: Build, Test, Deploy
   sub_category: Version Control System
   image_url: https://img.stackshare.io/service/1046/git.png
+  detection_source_url: https://github.com/proinsias/heart-disease
   detection_source: Repo Metadata
 - name: PyPI
   description: A repository of software for the Python programming language
@@ -45,6 +49,7 @@ tools:
   category: Build, Test, Deploy
   sub_category: Hosted Package Repository
   image_url: https://img.stackshare.io/service/12572/-RIWgodF_400x400.jpg
+  detection_source_url: https://github.com/proinsias/heart-disease/blob/main/pyproject.toml
   detection_source: pyproject.toml
   last_updated_by: Francis T. O'Donovan
   last_updated_on: 2023-09-08 03:44:03.000000000 Z
@@ -57,6 +62,7 @@ tools:
   category: Application Utilities
   sub_category: Data Science Notebooks
   image_url: https://img.stackshare.io/service/4190/fGBUdNf__400x400.jpg
+  detection_source_url: https://github.com/proinsias/heart-disease
   detection_source: Repo Metadata
 - name: LangChain
   description: Build AI apps with LLMs through composability
@@ -66,6 +72,7 @@ tools:
   category: Communications
   sub_category: Large Language Model Tools
   image_url: https://img.stackshare.io/service/48790/default_5b6c6b73f1ff3775c85d2a1ba954cb87e30cbf13.jpg
+  detection_source_url: https://github.com/proinsias/heart-disease/blob/main/project-words.txt
   detection_source: project-words.txt
   last_updated_by: Francis T. O'Donovan
   last_updated_on: 2023-09-09 02:46:24.000000000 Z
@@ -97,6 +104,19 @@ tools:
   detection_source: pyproject.toml
   last_updated_by: Francis T. O'Donovan
   last_updated_on: 2023-09-20 02:00:31.000000000 Z
+  vulnerabilities:
+  - name: JupyterLab vulnerable to potential authentication and CSRF tokens leak
+    cve_id: CVE-2024-22421
+    cve_url: https://github.com/advisories/GHSA-44cc-43rp-5947
+    detected_date: Jan 20
+    severity: high
+    first_patched: 4.0.11
+  - name: JupyterLab vulnerable to SXSS in Markdown Preview
+    cve_id: CVE-2024-22420
+    cve_url: https://github.com/advisories/GHSA-4m77-cmpx-vjc4
+    detected_date: Jan 20
+    severity: moderate
+    first_patched: 4.0.11
 - name: matplotlib
   description: Python plotting package
   package_url: https://pypi.org/project/matplotlib
