@@ -3,7 +3,8 @@
   "packages": [
     "uv@latest",
     "python@3.10",
-    "nodePackages.prettier@latest"
+    "nodePackages.prettier@latest",
+    "lychee@latest"
   ],
   "shell": {
     "init_hook": [". $VENV_DIR/bin/activate"],

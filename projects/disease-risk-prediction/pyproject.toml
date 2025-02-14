@@ -1,0 +1,33 @@
+[project]
+name = "disease-risk-prediction"
+version = "0.1.0"
+description = "Predict a risk score for common diseases based on input patient data."
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "bs4>=0.0.2",
+    "category-encoders>=2.8.0",
+    "keras>=3.8.0",
+    "loguru>=0.7.3",
+    "pandas>=2.2.3",
+    "pandera>=0.22.1",
+    "pydantic>=2.10.6",
+    "scikit-learn>=1.6.1",
+    "tensorflow-macos>=2.16.2",
+    "tensorflow-metal>=1.2.0",
+]
+
+[dependency-groups]
+dev = [
+    "disease-risk-prediction",
+    "ipython>=8.32.0",
+    "jupyterlab>=4.3.5",
+    "pandas-stubs>=2.2.3.241126",
+    "types-requests>=2.32.0.20241016",
+]
+
+[tool.mypy]
+plugins = ["pydantic.mypy"]
+
+[tool.uv.sources]
+disease-risk-prediction = { workspace = true }
