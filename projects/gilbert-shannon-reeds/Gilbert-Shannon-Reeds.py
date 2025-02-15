@@ -18,6 +18,8 @@ from IPython import get_ipython  # For automatically-generated python file.
 get_ipython().run_line_magic("matplotlib", "inline")
 get_ipython().run_line_magic("load_ext", "autoreload")
 get_ipython().run_line_magic("autoreload", "2")
+
+
 # From Wikipedia:
 # > In the mathematics of shuffling playing cards, the Gilbert–Shannon–Reeds model is a probability distribution on riffle shuffle permutations that has been reported to be a good match for experimentally observed outcomes of human shuffling, and that forms the basis for a recommendation that a deck of cards should be riffled seven times in order to thoroughly randomize it. ... The deck of cards is cut into two packets... [t]hen, one card at a time is repeatedly moved from the bottom of one of the packets to the top of the shuffled deck.
 # Here we implement the Gilbert–Shannon–Reeds model, and verify this recommendation of seven shuffles.
@@ -88,7 +90,7 @@ def should_drop_from_right_deck(n_left: int, n_right: int, seed: int = None) -> 
     else:
         # There are no more cards in either sub-deck.
         raise ValueError(
-            "Either `n_left` or `n_right` " "(or both) must be greater than zero.",
+            "Either `n_left` or `n_right` (or both) must be greater than zero.",
         )
 
 
@@ -155,6 +157,8 @@ uniform_rel_freqs = np.full(
     shape=[num_cards, num_cards],
     fill_value=1.0 / num_cards,
 )
+
+
 # In[16]:
 def calculate_differences(
     num_shuffles: int,

@@ -1,11 +1,6 @@
 {
   "$schema": "https://raw.githubusercontent.com/jetify-com/devbox/0.13.5/.schema/devbox.schema.json",
-  "packages": [
-    "uv@latest",
-    "python@3.10",
-    "nodePackages.prettier@latest",
-    "lychee@latest"
-  ],
+  "packages": ["python@3.10", "nodePackages.prettier@latest", "lychee@latest"],
   "shell": {
     "init_hook": [". $VENV_DIR/bin/activate"],
     "scripts": {

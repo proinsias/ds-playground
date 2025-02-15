@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+
+# Directory containing the projects, relative to this script's location
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+PROJECTS_DIR="${SCRIPT_DIR}/../projects"
+
+# Find .venv directories directly under directories in the projects directory
+find "${PROJECTS_DIR}" -mindepth 2 -maxdepth 2 -type d -name ".venv" | while read -r venv_dir; do
+    # Activate the virtual environment
+    source "${venv_dir}/bin/activate"
+
+    DIR_NAME="$(basename "$(dirname "${venv_dir}")")"
+
+    # Install Jupyter kernel
+    python -m ipykernel install --sys-prefix --name "${DIR_NAME}" --display-name "${DIR_NAME}"
+
+    # Deactivate the virtual environment
+    deactivate
+done

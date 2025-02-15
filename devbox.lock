@@ -1,6 +1,9 @@
 {
   "lockfile_version": "1",
   "packages": {
+    "github:NixOS/nixpkgs/nixpkgs-unstable": {
+      "resolved": "github:NixOS/nixpkgs/1128e89fd5e11bb25aedbfc287733c6502202ea9?lastModified=1739451785&narHash=sha256-3ebRdThRic9bHMuNi2IAA%2Fek9b32bsy8F5R4SvGTIog%3D"
+    },
     "lychee@latest": {
       "last_modified": "2025-01-19T08:16:51Z",
       "resolved": "github:NixOS/nixpkgs/50165c4f7eb48ce82bd063e1fb8047a0f515f8ce#lychee",
@@ -151,70 +154,6 @@
             }
           ],
           "store_path": "/nix/store/xmhjnvgg1v2c2sr5hqv0p52ikcbvw1m4-python3-3.10.15"
-        }
-      }
-    },
-    "uv@latest": {
-      "last_modified": "2024-11-06T21:27:13Z",
-      "resolved": "github:NixOS/nixpkgs/fe348e1a06a2d791e992d46844a83d2d44436c5a#uv",
-      "source": "devbox-search",
-      "version": "0.4.30",
-      "systems": {
-        "aarch64-darwin": {
-          "outputs": [
-            {
-              "name": "out",
-              "path": "/nix/store/qi51h4lf25lyrv7cqbyx0y8iy6h0b162-uv-0.4.30",
-              "default": true
-            },
-            {
-              "name": "dist",
-              "path": "/nix/store/5d86hk13wviam3dx08rx4hdqlyibljjx-uv-0.4.30-dist"
-            }
-          ],
-          "store_path": "/nix/store/qi51h4lf25lyrv7cqbyx0y8iy6h0b162-uv-0.4.30"
-        },
-        "aarch64-linux": {
-          "outputs": [
-            {
-              "name": "out",
-              "path": "/nix/store/52flk1qj2ys8vl4gicg9v1hzl93wrqfd-uv-0.4.30",
-              "default": true
-            },
-            {
-              "name": "dist",
-              "path": "/nix/store/7n5xmhdkykgmxbi5dq3gr5bd21qrpxd3-uv-0.4.30-dist"
-            }
-          ],
-          "store_path": "/nix/store/52flk1qj2ys8vl4gicg9v1hzl93wrqfd-uv-0.4.30"
-        },
-        "x86_64-darwin": {
-          "outputs": [
-            {
-              "name": "out",
-              "path": "/nix/store/2xld2nkcv87hvbdjl10q4jnk7q0znhcy-uv-0.4.30",
-              "default": true
-            },
-            {
-              "name": "dist",
-              "path": "/nix/store/jiwzla4ry9fvfva429hccn3b3mak8ji0-uv-0.4.30-dist"
-            }
-          ],
-          "store_path": "/nix/store/2xld2nkcv87hvbdjl10q4jnk7q0znhcy-uv-0.4.30"
-        },
-        "x86_64-linux": {
-          "outputs": [
-            {
-              "name": "out",
-              "path": "/nix/store/1nmdibibfpykcz7gkkx2qgva3b21la80-uv-0.4.30",
-              "default": true
-            },
-            {
-              "name": "dist",
-              "path": "/nix/store/6fpslr5f0m7iwrfh7ylnyshxdrfr88k0-uv-0.4.30-dist"
-            }
-          ],
-          "store_path": "/nix/store/1nmdibibfpykcz7gkkx2qgva3b21la80-uv-0.4.30"
         }
       }
     }

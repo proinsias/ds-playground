@@ -7,7 +7,7 @@ license = { text = "MIT License" }
 repository = "https://github.com/proinsias/gilbert-shannon-reeds"
 documentation = "https://github.com/proinsias/gilbert-shannon-reeds"
 readme = "README.md"
-requires-python = ">=3.9"
+requires-python = ">=3.10"
 
 dependencies = [
     "ds-utils",
@@ -16,11 +16,11 @@ dependencies = [
     "ipython>=8.5.0",
     "jupyter>=1.0.0",
     "matplotlib>=3.6.1",
-    "notebook>=6.5.1",  # CVE-2020-26215
+    "notebook>=6.5.1", # CVE-2020-26215
     "numpy>=1.23.4",
     "scikit-learn>=1.1.2",
     "scipy>=1.9.3",
-    "pyyaml>=6.0"
+    "pyyaml>=6.0",
 ]
 
 [dependency-groups]

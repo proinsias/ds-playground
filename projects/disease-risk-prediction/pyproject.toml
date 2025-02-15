@@ -11,23 +11,43 @@ dependencies = [
     "loguru>=0.7.3",
     "pandas>=2.2.3",
     "pandera>=0.22.1",
+    "pyarrow>=19.0.0",
     "pydantic>=2.10.6",
     "scikit-learn>=1.6.1",
+    "seaborn>=0.13.2",
     "tensorflow-macos>=2.16.2",
     "tensorflow-metal>=1.2.0",
+    "us>=3.2.0",
+    "ydata-profiling>=4.12.2",
 ]
+
+[build-system]
+# Needed to ensure uv sync will auto-add the project as editable dependency.
+requires = ["setuptools>=42"]
+build-backend = "setuptools.build_meta"
 
 [dependency-groups]
 dev = [
     "disease-risk-prediction",
+    "ipykernel>=6.29.5",
+    "ipyparallel>=9.0.0",
     "ipython>=8.32.0",
+    "jupyter-nbextensions-configurator>=0.6.4",
     "jupyterlab>=4.3.5",
+    "jupytext>=1.16.7",
+    "nbdime>=4.0.2",
     "pandas-stubs>=2.2.3.241126",
     "types-requests>=2.32.0.20241016",
 ]
 
+[tool.jupytext]
+formats = "ipynb,py:percent"
+
 [tool.mypy]
 plugins = ["pydantic.mypy"]
+
+[tool.setuptools]
+packages = ["disease_risk_prediction"]
 
 [tool.uv.sources]
 disease-risk-prediction = { workspace = true }
