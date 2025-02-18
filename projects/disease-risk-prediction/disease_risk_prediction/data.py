@@ -8,43 +8,95 @@ import pandera as pa
 import requests
 import tqdm
 from bs4 import BeautifulSoup
+from loguru import logger
 
 import disease_risk_prediction.constants as c
 
 
-class PatientDataSchema(pa.DataFrameModel):  # dead: disable
-    """Data validation schema using pandera."""
+class PatientDataSchema(pa.DataFrameModel):
+    """Data validation schema using pandera.
 
-    age: pa.typing.Series[int]
-    gender: pa.typing.Series[str]
-    bmi: pa.typing.Series[float]
-    smoking_status: pa.typing.Series[str]
-    alcohol_use: pa.typing.Series[str]
-    physical_activity: pa.typing.Series[str]
-    blood_pressure: pa.typing.Series[str]
-    cholesterol_level: pa.typing.Series[str]
-    diabetes_history: pa.typing.Series[str]
+    See this url for codebook:
+    https://www.cdc.gov/brfss/annual_data/2023/zip/codebook23_llcp-v2-508.zip
+    """
 
-    @pa.check("age", name="row_count_check", strategy="element_wise")
-    def check_row_count(cls, series: pd.Series) -> bool:  # dead: disable
-        """Ensure the DataFrame has the correct length."""
-        return len(series) == c.NUM_RECORDS_2023
+    #
+    # Features / flags.
+    # Apply all filters together.
+    #
+    # Overall.
+    #
+    # Keep only completed surveys.
+    dispcode: pa.typing.Series[int] = pa.Field(isin=[1100])
+    #
+    # Demographics.
+    #
+    state: pa.typing.Series[int] = pa.Field(
+        isin=list(c.US_STATES_FIPS.keys()),
+    )
+    sex: pa.typing.Series[int] = pa.Field(isin=[1, 2])
+    educa: pa.typing.Series[float] = pa.Field(ge=1, le=6)
+    marital: pa.typing.Series[float] = pa.Field(ge=1, le=6)
+    veteran3: pa.typing.Series[float] = pa.Field(isin=[1, 2])
+    income3: pa.typing.Series[float] = pa.Field(ge=1, le=11)
+    employ1: pa.typing.Series[float] = pa.Field(ge=1, le=8)
+    children: pa.typing.Series[int] = pa.Field(ge=0, le=87)
+    #
+    # Medical.
+    #
+    wtkg3: pa.typing.Series[float] = pa.Field(ge=2300, le=29500)
+    htm4: pa.typing.Series[float] = pa.Field(ge=91, le=244)
+    physhlth: pa.typing.Series[int] = pa.Field(ge=0, le=30)
+    menthlth: pa.typing.Series[float] = pa.Field(ge=0, le=30)
+    genhlth: pa.typing.Series[float] = pa.Field(ge=1, le=5)
+    smoke100: pa.typing.Series[float] = pa.Field(isin=[1, 2])
+    checkup1: pa.typing.Series[int] = pa.Field(ge=1, le=4)
+    flushot7: pa.typing.Series[float] = pa.Field(isin=[1, 2])
+    pneuvac4: pa.typing.Series[float] = pa.Field(isin=[1, 2])
+    #
+    # Target variables.
+    # Filter out these individually for different models.
+    #
+    # Asthma.
+    asthms1: pa.typing.Series[str]
+    # Arthritis.
+    drdxar2: pa.typing.Series[str]
+    # Cancer.
+    chcscnc1: pa.typing.Series[str]
+    chcocnc1: pa.typing.Series[str]
+    # Coronary heart disease (CHD) or myocardial infarction (MI).
+    michd: pa.typing.Series[str]
+    # Depression.
+    addepev3: pa.typing.Series[str]
+    # Diabetes.
+    diabete4: pa.typing.Series[str]
+    # High blood pressure.
+    rfhype6: pa.typing.Series[str]
+    # High cholesterol.
+    rfchol3: pa.typing.Series[str]
+    # Kidney disease.
+    chckdny2: pa.typing.Series[str]
+    # Lung disease.
+    chccopd3: pa.typing.Series[str]
+    # Stroke.
+    cvdstrk3: pa.typing.Series[str]
 
     class Config:  # dead: disable
         """PatientDataSchema configuration."""
 
-        strict = True  # dead: disable
+        coerce = True  # dead: disable
+        drop_invalid_rows = True  # dead: disable
+        strict = False  # dead: disable
 
 
 def fetch_health_data() -> pd.DataFrame:
     """
     Fetch health data from CDC API.
 
-    Returns: Validated health data as a DataFrame.
+    Returns: CDC health data as a DataFrame.
 
     Raises:
         requests.exceptions.RequestException: If the API request fails.
-        pa.errors.SchemaErrors: If the data validation fails.
     """
     data_path = c.DATA_DIR / "health.feather"
     if data_path.exists():
@@ -88,13 +140,13 @@ def fetch_health_data() -> pd.DataFrame:
                     table_data.append([ele for ele in cols if ele])
 
             fwf_df = pd.DataFrame(table_data, columns=headers)
-            names = fwf_df["Variable Name"].str.lower()
             fwf_df["Starting Column"] = (
                 fwf_df["Starting Column"].astype(int) - 1
             )  # Make it 0-indexed.
             fwf_df["End column"] = fwf_df["Starting Column"] + fwf_df[
                 "Field Length"
             ].astype(int)
+            names = fwf_df["Variable Name"].str.lower().str.replace("_", "")
             colspecs = fwf_df[["Starting Column", "End column"]].values.tolist()
 
             pbar.update(1)  # 4
@@ -107,19 +159,115 @@ def fetch_health_data() -> pd.DataFrame:
             StringIO(data),  # here data is a string.
             colspecs=colspecs,
             names=names,
-            # FIXME: names=c.HEALTH_DATA_COLS_OF_INTEREST,
         )
         pbar.update(1)  # 5
 
-        validated_df = df
-        # FIXME: Add back in once the schema is updated.
-        # # Validate data.
-        # try:
-        #     validated_df = PatientDataSchema.validate(df)
-        # except pa.errors.SchemaErrors as e:
-        #     logger.error(f"Schema validation errors: {e.failure_cases}")
-        #     raise
+        if len(df) != c.NUM_RECORDS_2023:
+            logger.error(f"DataFrame has {len(df)} (not {c.NUM_RECORDS_2023}) rows!!!")
+
+        df.to_feather(data_path)
         pbar.update(1)  # 6
 
-    validated_df.to_feather(data_path)
-    return validated_df
+        return df
+
+
+def validate_health_data(
+    health_df: pd.DataFrame,
+) -> pd.DataFrame:
+    """
+    Validate health data.
+
+    Returns: Validated health data as a DataFrame.
+    """
+    cols = list(PatientDataSchema.__annotations__.keys())
+
+    for col in [
+        "children",
+        "menthlth",
+        "physhlth",
+    ]:
+        health_df[col] = health_df[col].astype("Int64").replace(88, 0)
+
+    health_df["checkup1"] = health_df["checkup1"].astype("Int64").replace(8, 4)
+
+    valid_health_df = PatientDataSchema.validate(health_df[cols], lazy=True)
+
+    mask1 = (valid_health_df["chcscnc1"] == "1.0") | (
+        valid_health_df["chcocnc1"] == "1.0"
+    )
+    valid_health_df.loc[
+        mask1,
+        "cancer",
+    ] = "1.0"
+    mask2 = (valid_health_df["chcscnc1"] == "2.0") & (
+        valid_health_df["chcocnc1"] == "2.0"
+    )
+    valid_health_df.loc[
+        mask2,
+        "cancer",
+    ] = "2.0"
+    valid_health_df.loc[
+        ~(mask1 | mask2),
+        "cancer",
+    ] = "7.0"
+
+    valid_health_df["state_latitude"] = valid_health_df["state"].map(
+        lambda x: c.US_STATES_COORDINATES[c.US_STATES_FIPS[x]][0],
+    )
+    valid_health_df["state_longitude"] = valid_health_df["state"].map(
+        lambda x: c.US_STATES_COORDINATES[c.US_STATES_FIPS[x]][1],
+    )
+
+    valid_health_df = valid_health_df.drop(
+        columns=[
+            "dispcode",
+            "chcscnc1",
+            "chcocnc1",
+            "state",
+        ],
+    )
+
+    if len(valid_health_df) != c.NUM_VALID_RECORDS_2023:
+        logger.error(
+            f"DataFrame has {len(valid_health_df)} (not {c.NUM_VALID_RECORDS_2023}) rows!!!",
+        )
+
+    # Drop duplicates!
+
+    return valid_health_df.convert_dtypes()
+
+
+# FIXME: import us, us.states.lookup('24'), us.states.lookup('MD') -> convert to fips
+# FIXME: See codebook for how to deriv _sex from inputs.
+# FIXME: Ask for weight in lbs and convert.
+# FIXME: Ask for height in feet and inches and convert.
+# FIXME: asthma3 Filter out 7, 9, BLANK.
+# FIXME: asthnow Filter out 7, 9, BLANK.
+# FIXME: _drdxar2 Filter out BLANK.
+# FIXME: chcscnc1 Filter out 7, 9, BLANK.
+# FIXME: chcocnc1 Filter out 7, 9, BLANK.
+# FIXME: _michd Filter out BLANK.
+# FIXME: addepev3 Filter out 7, 9, BLANK.
+# FIXME: diabete4 Filter out 7, 9, BLANK.
+# FIXME: _rfhype6 Filter out 9.
+# FIXME: _rfchol3 Filter out 9, BLANK.
+# FIXME: chckdny2 Filter out 7, 9, BLANK.
+# FIXME: chccopd3 Filter out 7, 9, BLANK.
+# FIXME: cvdstrk3 Filter out 7, 9, BLANK.
+
+# FIXME: Add extra features and target variables.
+
+# alcday4
+# avedrnk3
+# drnk3ge5
+# maxdrnks
+
+# exeroft1 or
+# exerhmm1
+# _hlthpl1
+# _totinda
+# padur1_
+# pafreq1_
+# _minac12
+# pamin13_
+# pa3min_ -> probably just this one!

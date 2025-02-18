@@ -16,16 +16,30 @@ def preprocess_training_data(
 ) -> Tuple[pd.DataFrame, pd.Series, ColumnTransformer]:
     """Encode categorical features and scale numerical features."""
     categorical_cols = [
-        "gender",
-        "smoking_status",
-        "alcohol_use",
-        "physical_activity",
-        "blood_pressure",
-        "cholesterol_level",
-        "diabetes_history",
+        "sex",
+        "marital",
+        "veteran3",
+        "employ1",
+        "smoke100",
+        "flushot7",
+        "pneuvac4",
     ]
 
-    numerical_cols = ["age", "bmi"]
+    numerical_cols = [
+        "educa",  # Ordinal.
+        "income3",  # Ordinal.
+        "children",
+        "wtkg3",
+        "htm4",
+        "physhlth",
+        "menthlth",
+        "genhlth",  # Ordinal.
+        "checkup1",  # Ordinal.
+        "state_latitude",
+        "state_longitude",
+    ]
+
+    # FIXME: state -> state lat long?
 
     # Define the column transformer
     preprocessor = ColumnTransformer(

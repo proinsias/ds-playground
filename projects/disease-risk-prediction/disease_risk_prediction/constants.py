@@ -3,107 +3,123 @@
 import pathlib
 
 DATA_DIR = pathlib.Path(__file__).resolve().parent.parent / "data"
-
-# FIXME: Replace HEALTH_DATA_COLS_OF_INTEREST with list of PatientDataSchema variables.
-HEALTH_DATA_COLS_OF_INTEREST = [  # dead: disable
-    # See for codebook:
-    # https://www.cdc.gov/brfss/annual_data/2023/zip/codebook23_llcp-v2-508.zip
-    #
-    # FIXME: Can I do this filtering via Pandera without showing error?
-    #
-    # Features / flags.
-    # Apply all filters together.
-    #
-    # Overall.
-    "dispcode",  # FIXME: Filter out incomplete surveys. Keep only values '1100'. Then drop.
-    # Demographics.
-    "_state",  # FIXME: import us, us.states.lookup('24'), us.states.lookup('MD')
-    "_sex",  # FIXME: See codebook for how to derive from inputs.
-    "educa",  # FIXME: Filter out 9, BLANK.
-    "marital",  # FIXME: Filter out 9, BLANK.
-    "veteran3",  # FIXME: Filter out 7, 9, BLANK.
-    "income3",  # FIXME: Filter out 77, 99, BLANK.
-    "employ1",  # FIXME: Filter out 9, BLANK.
-    "children",  # FIXME: Filter out 99, BLANK. Set 88 to 0.
-    "firearm5",  # FIXME: Filter out 7, 9, BLANK.
-    # Medical.
-    "wtkg3",  # FIXME: Filter out BLANK.  # FIXME: Ask for weight in lbs and convert.
-    "htm4",  # FIXME: Filter out BLANK.  # FIXME: Ask for height in feet and inches and convert.
-    "physhlth",  # FIXME: Filter out 77, 99, BLANK. Set 88 to 0.
-    "menthlth",  # FIXME: Filter out 77, 99, BLANK. Set 88 to 0.
-    "genhlth",  # FIXME: Filter out 7, 9, BLANK.
-    "smoke100",  # FIXME: Filter out 7, 9, BLANK.
-    "smokday2",  # FIXME: Filter out 7, 9, BLANK.
-    "usenow3",  # FIXME: Filter out 7, 9, BLANK.
-    "checkup1",  # FIXMEL: Filter out 7, 9, BLANK. Set 8 to 4.
-    #
-    # Target variables.
-    # Filter out these individually for different models.
-    #
-    # Asthma.
-    "asthma3",  # FIXME: Filter out 7, 9, BLANK.
-    "asthnow",  # FIXME: Filter out 7, 9, BLANK.
-    # Arthritis.
-    "_drdxar2",  # FIXME: Filter out BLANK.
-    # Cancer.
-    "chcscnc1",  # FIXME: Filter out 7, 9, BLANK.
-    "chcocnc1",  # FIXME: Filter out 7, 9, BLANK.
-    # Coronary heart disease (CHD) or myocardial infarction (MI).
-    "_michd",  # FIXME: Filter out BLANK.
-    # Diabetes.
-    "diabete4",  # FIXME: Filter out 7, 9, BLANK.
-    # High blood pressure.
-    "_rfhype6",  # FIXME: Filter out 9.
-    # High cholesterol.
-    "_rfchol3",  # FIXME: Filter out 9, BLANK.
-    # Lung disease.
-    "chccopd3",  # FIXME: Filter out 7, 9, BLANK.
-    # Stroke.
-    "cvdstrk3",  # FIXME: Filter out 7, 9, BLANK.
-]
 NUM_RECORDS_2023 = 433323  # 433,323 records for 2023.
+NUM_VALID_RECORDS_2023 = 222742
 RANDOM_STATE = 42
 
-# addepev3
-# chckdny2
-# colncncr
+US_STATES_COORDINATES = {
+    # https://inkplant.com/code/state-latitudes-longitudes
+    "Alabama": [32.806671, -86.791130],
+    "Alaska": [61.370716, -152.404419],
+    "Arizona": [33.729759, -111.431221],
+    "Arkansas": [34.969704, -92.373123],
+    "California": [36.116203, -119.681564],
+    "Colorado": [39.059811, -105.311104],
+    "Connecticut": [41.597782, -72.755371],
+    "Delaware": [39.318523, -75.507141],
+    "District of Columbia": [38.897438, -77.026817],
+    "Florida": [27.766279, -81.686783],
+    "Georgia": [33.040619, -83.643074],
+    "Guam": [13.44194, 144.77639],
+    "Hawaii": [21.094318, -157.498337],
+    "Idaho": [44.240459, -114.478828],
+    "Illinois": [40.349457, -88.986137],
+    "Indiana": [39.849426, -86.258278],
+    "Iowa": [42.011539, -93.210526],
+    "Kansas": [38.526600, -96.726486],
+    "Kentucky": [37.668140, -84.670067],
+    "Louisiana": [31.169546, -91.867805],
+    "Maine": [44.693947, -69.381927],
+    "Maryland": [39.063946, -76.802101],
+    "Massachusetts": [42.230171, -71.530106],
+    "Michigan": [43.326618, -84.536095],
+    "Minnesota": [45.694454, -93.900192],
+    "Mississippi": [32.741646, -89.678696],
+    "Missouri": [38.456085, -92.288368],
+    "Montana": [46.921925, -110.454353],
+    "Nebraska": [41.125370, -98.268082],
+    "Nevada": [38.313515, -117.055374],
+    "New Hampshire": [43.452492, -71.563896],
+    "New Jersey": [40.298904, -74.521011],
+    "New Mexico": [34.840515, -106.248482],
+    "New York": [42.165726, -74.948051],
+    "North Carolina": [35.630066, -79.806419],
+    "North Dakota": [47.528912, -99.784012],
+    "Ohio": [40.388783, -82.764915],
+    "Oklahoma": [35.565342, -96.928917],
+    "Oregon": [44.572021, -122.070938],
+    "Pennsylvania": [40.590752, -77.209755],
+    "Puerto Rico": [18.200178, -66.664513],
+    "Rhode Island": [41.680893, -71.511780],
+    "South Carolina": [33.856892, -80.945007],
+    "South Dakota": [44.299782, -99.438828],
+    "Tennessee": [35.747845, -86.692345],
+    "Texas": [31.054487, -97.563461],
+    "Utah": [40.150032, -111.862434],
+    "Vermont": [44.045876, -72.710686],
+    "Virginia": [37.769337, -78.169968],
+    "Virgin Islands": [18.34000000, -64.93000000],
+    "Washington": [47.400902, -121.490494],
+    "West Virginia": [38.491226, -80.954453],
+    "Wisconsin": [44.268543, -89.616508],
+    "Wyoming": [42.755966, -107.302490],
+}
 
-# exeroft1 or
-# exerhmm1
-# deaf
-# blind
-# alcday4
-# avedrnk3
-# drnk3ge5
-# maxdrnks
-# flushot7
-# flshtmy3
-# pneuvac4
-# shingle2
-# hivtst7
-# seatbelt
-# drnkdri2
-# covidpo1
-# lcsfirst
-# lcslast
-# lcsnumcg
-# lastsmk2
-# stopsmk2
-# somale
-# sofemale
-# trnsgndr
-# marijan1
-# lsatisfy
-# emtsuprt
-# sdlonely
-# sdhemply
-# foodstmp
-# _hlthpl1
-# _totinda
-# maxvo21_
-# padur1_
-# pafreq1_
-# _minac12
-# pamin13_
-# pa3min_ -> probably just this one!
-# pa3vigm_
+US_STATES_FIPS = {
+    # https://github.com/unitedstates/python-us/
+    1: "Alabama",
+    2: "Alaska",
+    4: "Arizona",
+    5: "Arkansas",
+    6: "California",
+    8: "Colorado",
+    9: "Connecticut",
+    10: "Delaware",
+    12: "Florida",
+    13: "Georgia",
+    15: "Hawaii",
+    16: "Idaho",
+    17: "Illinois",
+    18: "Indiana",
+    19: "Iowa",
+    20: "Kansas",
+    21: "Kentucky",
+    22: "Louisiana",
+    23: "Maine",
+    24: "Maryland",
+    25: "Massachusetts",
+    26: "Michigan",
+    27: "Minnesota",
+    28: "Mississippi",
+    29: "Missouri",
+    30: "Montana",
+    31: "Nebraska",
+    32: "Nevada",
+    33: "New Hampshire",
+    34: "New Jersey",
+    35: "New Mexico",
+    36: "New York",
+    37: "North Carolina",
+    38: "North Dakota",
+    39: "Ohio",
+    40: "Oklahoma",
+    41: "Oregon",
+    42: "Pennsylvania",
+    44: "Rhode Island",
+    45: "South Carolina",
+    46: "South Dakota",
+    47: "Tennessee",
+    48: "Texas",
+    49: "Utah",
+    50: "Vermont",
+    51: "Virginia",
+    53: "Washington",
+    54: "West Virginia",
+    55: "Wisconsin",
+    56: "Wyoming",
+    60: "American Samoa",
+    66: "Guam",
+    69: "Northern Mariana Islands",
+    72: "Puerto Rico",
+    78: "Virgin Islands",
+}

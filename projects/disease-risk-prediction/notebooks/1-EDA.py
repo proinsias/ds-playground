@@ -8,10 +8,15 @@ import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
+import plotly.express as px
 import seaborn as sns
+import ydata_profiling
 from IPython.core.interactiveshell import InteractiveShell
 
-from disease_risk_prediction.data import fetch_health_data
+from disease_risk_prediction.data import (
+    fetch_health_data,
+    validate_health_data,
+)
 
 
 # %%
@@ -61,7 +66,52 @@ health_df = fetch_health_data()
 health_df.shape
 health_df.head()
 
-# %%
-health_df.describe()
+# %% [markdown]
+# ## Validate
 
 # %%
+valid_health_df = validate_health_data(health_df)
+
+# %%
+valid_health_df.shape
+valid_health_df.head()
+
+# %% [markdown]
+# ## EDA
+
+# %%
+valid_health_df.describe()
+
+# %%
+profile = ydata_profiling.ProfileReport(valid_health_df, title="Profiling Report")
+
+# %%
+profile.to_notebook_iframe()
+
+# %%
+temp_df = valid_health_df[
+    [
+        "state_latitude",
+        "state_longitude",
+    ]
+].drop_duplicates()
+
+fig = px.scatter_geo(
+    temp_df,
+    lat="state_latitude",
+    lon="state_longitude",
+    scope="usa",
+    title="US States Latitude/Longitude Locations",
+)
+
+fig.show()
+
+# %%
+
+# %%
+# FIXME:
+
+# Children outliers
+# wtkg3 outliers, skew?
+# htm4 outliers, skew?
+# skew: physhlth, menthlth

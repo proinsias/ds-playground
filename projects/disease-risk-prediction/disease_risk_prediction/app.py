@@ -3,12 +3,13 @@ import numpy as np
 import shap
 import streamlit as st
 import tensorflow as tf
-from disease_risk_prediction.constants import RANDOM_STATE
-from disease_risk_prediction.data import fetch_health_data
-from disease_risk_prediction.preprocess import preprocess_training_data
-from disease_risk_prediction.train import build_model
 from loguru import logger
 from sklearn.model_selection import train_test_split
+
+from disease_risk_prediction.constants import RANDOM_STATE
+from disease_risk_prediction.data import fetch_health_data, validate_health_data
+from disease_risk_prediction.preprocess import preprocess_training_data
+from disease_risk_prediction.train import build_model
 
 # See TensorFlow version.
 logger.info(f"TensorFlow version: {tf.__version__}")
@@ -20,6 +21,7 @@ logger.info(
 
 # Fetch and preview data
 df = fetch_health_data()
+df = validate_health_data(df)
 logger.info(df.head())
 
 X, y, preprocessor = preprocess_training_data(df)
