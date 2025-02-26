@@ -6,7 +6,6 @@ import tensorflow as tf
 from loguru import logger
 from sklearn.model_selection import train_test_split
 
-from disease_risk_prediction.constants import RANDOM_STATE
 from disease_risk_prediction.data import fetch_health_data, validate_health_data
 from disease_risk_prediction.preprocess import preprocess_training_data
 from disease_risk_prediction.train import build_model
@@ -24,12 +23,16 @@ df = fetch_health_data()
 df = validate_health_data(df)
 logger.info(df.head())
 
-X, y, preprocessor = preprocess_training_data(df)
-X_train, y_train, X_test, y_test = train_test_split(
-    X,
-    y,
+X, ys, preprocessor = preprocess_training_data(df)
+
+# FIXME: Add in from train.py
+
+X_train, X_test, y_train, y_test = train_test_split(
+    X_asthma,
+    y_asthma,
     test_size=0.2,
-    random_state=RANDOM_STATE,
+    random_state=c.RANDOM_STATE,
+    stratify=y_asthma,
 )
 
 model = build_model(X_train.shape[1])

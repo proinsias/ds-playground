@@ -40,7 +40,7 @@ class PatientDataSchema(pa.DataFrameModel):
     veteran3: pa.typing.Series[float] = pa.Field(isin=[1, 2])
     income3: pa.typing.Series[float] = pa.Field(ge=1, le=11)
     employ1: pa.typing.Series[float] = pa.Field(ge=1, le=8)
-    children: pa.typing.Series[int] = pa.Field(ge=0, le=87)
+    children: pa.typing.Series[int] = pa.Field(ge=0, le=30)
     #
     # Medical.
     #
@@ -234,28 +234,27 @@ def validate_health_data(
 
     # Drop duplicates!
 
+    valid_health_df = valid_health_df.drop_duplicates()
+
     return valid_health_df.convert_dtypes()
 
 
 # FIXME: import us, us.states.lookup('24'), us.states.lookup('MD') -> convert to fips
 # FIXME: See codebook for how to deriv _sex from inputs.
+# FIXME: Just as for 'cancer', not chcocnc1 and chcscnc1
 # FIXME: Ask for weight in lbs and convert.
 # FIXME: Ask for height in feet and inches and convert.
-# FIXME: asthma3 Filter out 7, 9, BLANK.
-# FIXME: asthnow Filter out 7, 9, BLANK.
-# FIXME: _drdxar2 Filter out BLANK.
-# FIXME: chcscnc1 Filter out 7, 9, BLANK.
-# FIXME: chcocnc1 Filter out 7, 9, BLANK.
-# FIXME: _michd Filter out BLANK.
-# FIXME: addepev3 Filter out 7, 9, BLANK.
+
 # FIXME: diabete4 Filter out 7, 9, BLANK.
 # FIXME: _rfhype6 Filter out 9.
 # FIXME: _rfchol3 Filter out 9, BLANK.
 # FIXME: chckdny2 Filter out 7, 9, BLANK.
 # FIXME: chccopd3 Filter out 7, 9, BLANK.
 # FIXME: cvdstrk3 Filter out 7, 9, BLANK.
+# FIXME: chcscnc1 Filter out 7, 9, BLANK.
+# FIXME: chcocnc1 Filter out 7, 9, BLANK.
 
-# FIXME: Add extra features and target variables.
+# FIXME: Add extra features and target variables - below:
 
 # alcday4
 # avedrnk3

@@ -10,12 +10,17 @@ import numpy as np
 import pandas as pd
 import plotly.express as px
 import seaborn as sns
+import sklearn.preprocessing
+import sklearn.compose
 import ydata_profiling
 from IPython.core.interactiveshell import InteractiveShell
 
 from disease_risk_prediction.data import (
     fetch_health_data,
     validate_health_data,
+)
+from disease_risk_prediction.preprocess import (
+    preprocess_training_data,
 )
 
 
@@ -79,6 +84,9 @@ valid_health_df.head()
 # %% [markdown]
 # ## EDA
 
+# %% [markdown]
+# ### Overall
+
 # %%
 valid_health_df.describe()
 
@@ -106,12 +114,84 @@ fig = px.scatter_geo(
 
 fig.show()
 
-# %%
+# %% [markdown]
+# ### Outliers / skew
 
 # %%
-# FIXME:
+log_transformer = sklearn.preprocessing.FunctionTransformer(np.log1p, validate=True)
+power_transformer = sklearn.preprocessing.PowerTransformer(method="yeo-johnson")
+power_cols = ["children", "physhlth", "menthlth"]
+log_cols = ["wtkg3", "htm4"]
+passthrough_cols = [
+    col for col in valid_health_df.columns if col not in [*power_cols, *log_cols]
+]
 
-# Children outliers
-# wtkg3 outliers, skew?
-# htm4 outliers, skew?
-# skew: physhlth, menthlth
+preprocessor = sklearn.compose.ColumnTransformer(
+    [
+        ("log", log_transformer, log_cols),
+        ("power", power_transformer, power_cols),
+        ("num", "passthrough", passthrough_cols),
+    ],
+)
+
+# %%
+ax = valid_health_df["children"].hist(bins=50)
+ax.set_yscale("log")
+
+# %%
+temp_df["children"].hist(bins=50)
+
+# %%
+ax = valid_health_df["physhlth"].hist(bins=50)
+ax.set_yscale("log")
+
+# %%
+temp_df["physhlth"].hist(bins=50)
+
+# %%
+ax = valid_health_df["menthlth"].hist(bins=50)
+ax.set_yscale("log")
+
+# %%
+temp_df["menthlth"].hist(bins=50)
+
+# %%
+ax = valid_health_df["wtkg3"].hist(bins=50)
+ax.set_yscale("log")
+
+# %%
+temp_df["wtkg3"].hist(bins=50)
+
+# %%
+ax = valid_health_df["htm4"].hist(bins=50)
+ax.set_yscale("log")
+
+# %%
+temp_df["htm4"].hist(bins=50)
+
+# %% [markdown]
+# ## Pre-process data
+
+# %%
+X, ys, _ = preprocess_training_data(valid_health_df)
+
+# %%
+preprocessed_df = pd.concat(
+    objs=[
+        X,
+        ys,
+    ],
+    axis="columns",
+)
+
+# %%
+preprocessed_df.head()
+
+# %% [markdown]
+# ## EDA of pre-processed data
+
+# %%
+profile = ydata_profiling.ProfileReport(preprocessed_df, title="Profiling Report")
+
+# %%
+profile.to_notebook_iframe()

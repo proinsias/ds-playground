@@ -4,7 +4,7 @@ import pathlib
 
 DATA_DIR = pathlib.Path(__file__).resolve().parent.parent / "data"
 NUM_RECORDS_2023 = 433323  # 433,323 records for 2023.
-NUM_VALID_RECORDS_2023 = 222742
+NUM_VALID_RECORDS_2023 = 222739
 RANDOM_STATE = 42
 
 US_STATES_COORDINATES = {
