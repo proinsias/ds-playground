@@ -3,12 +3,15 @@
 from io import BytesIO, StringIO
 from zipfile import ZipFile
 
+import numpy as np
 import pandas as pd
 import pandera as pa
 import requests
 import tqdm
 from bs4 import BeautifulSoup
+from joblib import Parallel, delayed
 from loguru import logger
+from sklearn.base import BaseEstimator, TransformerMixin
 
 import disease_risk_prediction.constants as c
 
@@ -53,33 +56,6 @@ class PatientDataSchema(pa.DataFrameModel):
     checkup1: pa.typing.Series[int] = pa.Field(ge=1, le=4)
     flushot7: pa.typing.Series[float] = pa.Field(isin=[1, 2])
     pneuvac4: pa.typing.Series[float] = pa.Field(isin=[1, 2])
-    #
-    # Target variables.
-    # Filter out these individually for different models.
-    #
-    # Asthma.
-    asthms1: pa.typing.Series[str]
-    # Arthritis.
-    drdxar2: pa.typing.Series[str]
-    # Cancer.
-    chcscnc1: pa.typing.Series[str]
-    chcocnc1: pa.typing.Series[str]
-    # Coronary heart disease (CHD) or myocardial infarction (MI).
-    michd: pa.typing.Series[str]
-    # Depression.
-    addepev3: pa.typing.Series[str]
-    # Diabetes.
-    diabete4: pa.typing.Series[str]
-    # High blood pressure.
-    rfhype6: pa.typing.Series[str]
-    # High cholesterol.
-    rfchol3: pa.typing.Series[str]
-    # Kidney disease.
-    chckdny2: pa.typing.Series[str]
-    # Lung disease.
-    chccopd3: pa.typing.Series[str]
-    # Stroke.
-    cvdstrk3: pa.typing.Series[str]
 
     class Config:  # dead: disable
         """PatientDataSchema configuration."""
@@ -171,72 +147,285 @@ def fetch_health_data() -> pd.DataFrame:
         return df
 
 
-def validate_health_data(
-    health_df: pd.DataFrame,
-) -> pd.DataFrame:
+class HealthDataValidator(BaseEstimator, TransformerMixin):
     """
-    Validate health data.
-
-    Returns: Validated health data as a DataFrame.
+    Custom transformer to validate health data, with parallel processing support.
     """
-    cols = list(PatientDataSchema.__annotations__.keys())
 
-    for col in [
-        "children",
-        "menthlth",
-        "physhlth",
-    ]:
-        health_df[col] = health_df[col].astype("Int64").replace(88, 0)
+    def __init__(
+        self,
+        n_jobs: int | None = -1,
+    ):
+        """
+        Initialize the transformer.
 
-    health_df["checkup1"] = health_df["checkup1"].astype("Int64").replace(8, 4)
+        Args:
+            n_jobs: Number of CPU cores to use. -1 uses all available cores.
+        """
+        self.n_jobs = n_jobs
 
-    valid_health_df = PatientDataSchema.validate(health_df[cols], lazy=True)
+    def fit(
+        self,
+        X: pd.DataFrame,
+        y: pd.Series | None = None,
+    ) -> "HealthDataValidator":
+        return self  # No fitting needed
 
-    mask1 = (valid_health_df["chcscnc1"] == "1.0") | (
-        valid_health_df["chcocnc1"] == "1.0"
-    )
-    valid_health_df.loc[
-        mask1,
-        "cancer",
-    ] = "1.0"
-    mask2 = (valid_health_df["chcscnc1"] == "2.0") & (
-        valid_health_df["chcocnc1"] == "2.0"
-    )
-    valid_health_df.loc[
-        mask2,
-        "cancer",
-    ] = "2.0"
-    valid_health_df.loc[
-        ~(mask1 | mask2),
-        "cancer",
-    ] = "7.0"
+    def transform(
+        self,
+        X: pd.DataFrame,
+    ) -> pd.DataFrame:
+        """
+        Validate health data.
 
-    valid_health_df["state_latitude"] = valid_health_df["state"].map(
-        lambda x: c.US_STATES_COORDINATES[c.US_STATES_FIPS[x]][0],
-    )
-    valid_health_df["state_longitude"] = valid_health_df["state"].map(
-        lambda x: c.US_STATES_COORDINATES[c.US_STATES_FIPS[x]][1],
-    )
+        Args:
+            X: DataFrame containing health data.
 
-    valid_health_df = valid_health_df.drop(
-        columns=[
-            "dispcode",
-            "chcscnc1",
-            "chcocnc1",
-            "state",
-        ],
-    )
-
-    if len(valid_health_df) != c.NUM_VALID_RECORDS_2023:
-        logger.error(
-            f"DataFrame has {len(valid_health_df)} (not {c.NUM_VALID_RECORDS_2023}) rows!!!",
+        Returns:
+            Validated health data as a DataFrame.
+        """
+        col_conversions = {
+            "children": {
+                "replace_val": 88,
+                "new_val": 0,
+            },
+            "menthlth": {
+                "replace_val": 88,
+                "new_val": 0,
+            },
+            "physhlth": {
+                "replace_val": 88,
+                "new_val": 0,
+            },
+            "checkup1": {
+                "replace_val": 8,
+                "new_val": 4,
+            },
+        }
+        col_conversions = {k: v for k, v in col_conversions.items() if k in X.columns}
+        ss = Parallel(
+            n_jobs=self.n_jobs,
+        )(
+            delayed(self._convert_column)(
+                X=X,
+                col=k,
+                dtype="Int64",
+                replace_val=v["replace_val"],
+                new_val=v["new_val"],
+            )
+            for k, v in col_conversions.items()
+        )
+        X[list(col_conversions.keys())] = pd.concat(
+            objs=ss,
+            axis="columns",
         )
 
-    # Drop duplicates!
+        # FIXME: Update PatientDataSchema to keep only the data we ask the user in predictions.
+        cols = list(PatientDataSchema.__annotations__.keys())
+        valid_health_df = PatientDataSchema.validate(X[cols], lazy=True)
 
-    valid_health_df = valid_health_df.drop_duplicates()
+        valid_health_df[["state_latitude", "state_longitude"]] = Parallel(
+            n_jobs=self.n_jobs,
+        )(
+            delayed(self._get_state_coordinates)(state)
+            for state in valid_health_df["state"]
+        )
 
-    return valid_health_df.convert_dtypes()
+        valid_health_df = valid_health_df.drop(
+            columns=[
+                "dispcode",
+                "state",
+            ],
+            errors="ignore",
+        ).convert_dtypes()
+
+        valid_health_df[c.CATEGORICAL_COLS] = valid_health_df[
+            c.CATEGORICAL_COLS
+        ].astype("category")
+
+        return valid_health_df
+
+    @staticmethod
+    def _convert_column(
+        X: pd.DataFrame,
+        col: str,
+        dtype: str,
+        replace_val: int,
+        new_val: int,
+    ) -> pd.Series:
+        """
+        Convert column to a specific type and replace a value.
+
+        Args:
+            X: DataFrame.
+            col: Column name.
+            dtype: Target data type.
+            replace_val: Value to replace.
+            new_val: New value.
+
+        Returns:
+            Transformed column.
+        """
+        return X[col].astype(dtype).replace(replace_val, new_val)
+
+    @staticmethod
+    def _get_state_coordinates(
+        state: str,
+    ) -> pd.Series:
+        """
+        Get state coordinates from mappings.
+
+        Args:
+            state: State code.
+
+        Returns:
+            Latitude and longitude as a Series.
+        """
+        return pd.Series(
+            [
+                c.US_STATES_COORDINATES[c.US_STATES_FIPS[state]][0],
+                c.US_STATES_COORDINATES[c.US_STATES_FIPS[state]][1],
+            ]
+        )
+
+
+class HealthTrainingDataValidator(BaseEstimator, TransformerMixin):
+    """
+    Custom transformer to validate health target data.
+    """
+
+    def __init__(
+        self,
+        n_jobs: int | None = -1,
+    ):
+        """
+        Initialize the transformer.
+
+        Args:
+            n_jobs: Number of CPU cores to use. -1 uses all available cores.
+        """
+        self.n_jobs = n_jobs
+
+    def fit(
+        self,
+        X: pd.DataFrame,
+        y: pd.Series | None = None,
+    ) -> "HealthTrainingDataValidator":
+        return self  # No fitting needed
+
+    def transform(
+        self,
+        X: pd.DataFrame,
+    ) -> pd.DataFrame:
+        """
+        Validate health target data.
+
+        Args:
+            X: DataFrame containing health target data.
+
+        Returns:
+            Validated health target data as a DataFrame.
+        """
+        cols = [
+            "asthms1",  # Asthma.
+            "drdxar2",  # Arthritis.
+            "chcscnc1",  # Cancer.
+            "chcocnc1",  # Cancer.
+            "michd",  # Coronary heart disease (CHD) or myocardial infarction (MI).
+            "addepev3",  # Depression.
+            "diabete4",  # Diabetes.
+            "rfhype6",  # High blood pressure.
+            "rfchol3",  # High cholesterol.
+            "chckdny2",  # Kidney disease.
+            "chccopd3",  # Lung disease.
+            "cvdstrk3",  # Stroke.
+        ]
+
+        training_df = (
+            X[cols]
+            .assign(cancer=X.apply(self._determine_cancer_status, axis="columns"))
+            .drop(
+                columns=[
+                    "chcscnc1",  # Cancer.
+                    "chcocnc1",  # Cancer.
+                ],
+            )
+            .convert_dtypes()
+        )
+
+        ss = Parallel(
+            n_jobs=self.n_jobs,
+        )(
+            delayed(self._binarize_targets)(
+                X=training_df,
+                disease_col=col,
+                keep_values=values["keep_values"],
+                ones=values["ones"],
+                zeros=values["zeros"],
+            )
+            for col, values in c.TRAINING_PREP_DATA.items()
+        )
+
+        training_df[list(c.TRAINING_PREP_DATA.keys())] = pd.concat(
+            objs=ss,
+            axis="columns",
+        )
+
+        if sorted(list(training_df.columns)) != sorted(c.Y_COLS):
+            logger.error(
+                "DataFrame has incorrect columns!!!",
+            )
+
+        return training_df
+
+    @staticmethod
+    def _determine_cancer_status(
+        row: pd.Series,
+    ) -> float:
+        """
+        Determine the cancer status of a row.
+
+        Args:
+            row: A row of the DataFrame.
+
+        Returns:
+            Cancer status as a string.
+        """
+        if pd.notna(row["chcscnc1"]) and np.isclose(row["chcscnc1"], 1.0):
+            return 1.0
+        elif pd.notna(row["chcocnc1"]) and np.isclose(row["chcocnc1"], 1.0):
+            return 1.0
+        elif (
+            pd.notna(row["chcscnc1"])
+            and np.isclose(row["chcscnc1"], 2.0)
+            and pd.notna(row["chcocnc1"])
+            and np.isclose(row["chcocnc1"], 2.0)
+        ):
+            return 2.0
+        return 7.0
+
+    @staticmethod
+    def _binarize_targets(
+        X: pd.DataFrame,
+        disease_col: str,
+        keep_values: list[int],
+        ones: list[int],
+        zeros: list[int],
+    ) -> pd.Series:
+        """Binarize target values for input disease."""
+        y = X[disease_col].astype(float).astype(pd.Int8Dtype())
+
+        logger.info(f"Initial {disease_col} value counts:")
+        logger.info(y.value_counts(dropna=False).to_string())
+
+        y.loc[~y.isin(keep_values)] = pd.NA
+        y.loc[y.isin(ones)] = 1  # Has or has had disease.
+        y.loc[y.isin(zeros)] = 0  # Never has had disease.
+
+        logger.info(f"\nUpdated {disease_col} value counts:")
+        logger.info(y.value_counts(dropna=False).to_string())
+
+        return y
 
 
 # FIXME: import us, us.states.lookup('24'), us.states.lookup('MD') -> convert to fips

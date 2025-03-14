@@ -4,8 +4,46 @@ import pathlib
 
 DATA_DIR = pathlib.Path(__file__).resolve().parent.parent / "data"
 NUM_RECORDS_2023 = 433323  # 433,323 records for 2023.
-NUM_VALID_RECORDS_2023 = 222739
+NUM_RECORDS_VALID_2023 = 246281
 RANDOM_STATE = 42
+
+CATEGORICAL_COLS = [
+    "sex",
+    "marital",
+    "veteran3",
+    "employ1",
+    "smoke100",
+    "flushot7",
+    "pneuvac4",
+]
+NUMERICAL_COLS = [
+    "educa",  # Ordinal.
+    "income3",  # Ordinal.
+    "children",
+    "wtkg3",
+    "htm4",
+    "physhlth",
+    "menthlth",
+    "genhlth",  # Ordinal.
+    "checkup1",  # Ordinal.
+    "state_latitude",
+    "state_longitude",
+]
+POWER_COLS = ["children", "physhlth", "menthlth"]
+LOG_COLS = ["wtkg3", "htm4"]
+Y_COLS = [
+    "asthms1",
+    "drdxar2",
+    "michd",
+    "addepev3",
+    "diabete4",
+    "rfhype6",
+    "rfchol3",
+    "chckdny2",
+    "chccopd3",
+    "cvdstrk3",
+    "cancer",
+]
 
 US_STATES_COORDINATES = {
     # https://inkplant.com/code/state-latitudes-longitudes
@@ -122,4 +160,62 @@ US_STATES_FIPS = {
     69: "Northern Mariana Islands",
     72: "Puerto Rico",
     78: "Virgin Islands",
+}
+
+TRAINING_PREP_DATA = {
+    "asthms1": {
+        "keep_values": [1, 2, 3],
+        "ones": [1, 2],
+        "zeros": [3],
+    },
+    "drdxar2": {
+        "keep_values": [1, 2],
+        "ones": [1],
+        "zeros": [2],
+    },
+    "michd": {
+        "keep_values": [1, 2],
+        "ones": [1],
+        "zeros": [2],
+    },
+    "addepev3": {
+        "keep_values": [1, 2],
+        "ones": [1],
+        "zeros": [2],
+    },
+    "diabete4": {
+        "keep_values": [1, 2, 3, 4],
+        "ones": [1, 2],
+        "zeros": [3, 4],
+    },
+    "rfhype6": {
+        "keep_values": [1, 2],
+        "ones": [1],
+        "zeros": [2],
+    },
+    "rfchol3": {
+        "keep_values": [1, 2],
+        "ones": [1],
+        "zeros": [2],
+    },
+    "chckdny2": {
+        "keep_values": [1, 2],
+        "ones": [1],
+        "zeros": [2],
+    },
+    "chccopd3": {
+        "keep_values": [1, 2],
+        "ones": [1],
+        "zeros": [2],
+    },
+    "cvdstrk3": {
+        "keep_values": [1, 2],
+        "ones": [1],
+        "zeros": [2],
+    },
+    "cancer": {
+        "keep_values": [1, 2],
+        "ones": [1],
+        "zeros": [2],
+    },
 }

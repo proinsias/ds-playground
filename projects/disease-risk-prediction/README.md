@@ -50,5 +50,41 @@ Limited to surveyees understanding of their own health risks.
 // Placeholder for license information
 
 ```shell
-uv run jupyter lab &
+uv run --with jupyterlab jupyter lab &
+```
+
+```mermaid
+flowchart TD
+
+    %% Subprocess as a "nested" flowchart
+    subgraph SubGraph1 ["Global feature pipeline"]
+        V --> EC[Encode categorical <br/> Scale & deskew numeric]
+        EC --> NV[Drop features with <br/> no variance]
+        NV --> MC[Drop features to <br/> reduce multicollinearity]
+    end
+
+    %% Subprocess as a "nested" flowchart
+    subgraph SubGraph2 ["Global target pipeline"]
+        VV --> BT[Binarize targets]
+    end
+
+    %% Subprocess as a "nested" flowchart
+    subgraph SubGraph3 ["Target-specific pipeline"]
+        BT --> LS[Drop features with <br/> low signal with target]
+        LS --> UO[Under-/over-sample targets]
+    end
+
+    %% Main flow
+    FD[Fetch data] --> V[Validate features]
+    FD --> VV[Validate targets]
+    MC --> LS
+    UO --> T[Training]
+    T --> DC[Dummy Classifier]
+    DC --> DCR(Metrics report)
+    T --> X[Optimized XGBoost]
+    X --> XR(Metrics report)
+    X --> XLC(Learning curve)
+    T --> KR[Optimized Keras]
+    KR --> KRR(Metrics report)
+    KR --> KRLC(Learning curve)
 ```

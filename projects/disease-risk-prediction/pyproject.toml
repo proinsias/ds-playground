@@ -7,20 +7,18 @@ requires-python = ">=3.10"
 dependencies = [
     "bs4>=0.0.2",
     "category-encoders>=2.8.0",
+    "imblearn>=0.0",
     "ipywidgets>=8.1.5",
     "keras>=3.8.0",
     "loguru>=0.7.3",
     "pandas>=2.2.3",
     "pandera>=0.22.1",
-    "plotly>=6.0.0",
     "pyarrow>=19.0.0",
     "pydantic>=2.10.6",
     "scikit-learn>=1.6.1",
-    "seaborn>=0.13.2",
     "tensorflow-macos>=2.16.2",
     "tensorflow-metal>=1.2.0",
     "xgboost>=2.1.4",
-    "ydata-profiling>=4.12.2",
 ]
 
 [build-system]
@@ -30,7 +28,13 @@ build-backend = "setuptools.build_meta"
 
 [dependency-groups]
 dev = [
+    "bokeh>=3.6.3",
+    "colorcet>=3.1.0",
+    "datashader>=0.17.0",
+    "dbscan>=0.0.12",
     "disease-risk-prediction",
+    "hdbscan>=0.8.40",
+    "holoviews>=1.20.1",
     "ipykernel>=6.29.5",
     "ipyparallel>=9.0.0",
     "ipython>=8.32.0",
@@ -38,8 +42,17 @@ dev = [
     "jupyterlab>=4.3.5",
     "jupytext>=1.16.7",
     "nbdime>=4.0.2",
+    "opentsne>=1.0.2",
     "pandas-stubs>=2.2.3.241126",
+    "plotly>=6.0.0",
+    "ppscore>=1.1.0",
+    "scikit-image>=0.25.2",
+    "seaborn>=0.13.2",
+    "statsmodels>=0.14.4",
     "types-requests>=2.32.0.20241016",
+    "umap-learn>=0.5.7",
+    "ydata-profiling>=4.12.2",
+    "yellowbrick>=1.5",
 ]
 
 [tool.jupytext]

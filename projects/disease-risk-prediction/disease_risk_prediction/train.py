@@ -1,10 +1,38 @@
 """Model building and training for the Disease Risk Prediction project."""
 
+import pandas as pd
 from keras.layers import Dense, Dropout
 from keras.models import Sequential
 from tensorflow import keras
 
 # from sklearn.utils.class_weight import compute_class_weight
+
+
+def get_X_y_df(
+    training_df: pd.DataFrame,
+    disease: str,
+) -> tuple[pd.DataFrame, pd.Series, pd.DataFrame]:
+    """Get feature and target data for specified disease."""
+    disease_df = (
+        training_df[training_df["disease"] == disease]
+        .drop(
+            columns=[
+                "disease",
+            ],
+        )
+        .reset_index(
+            drop=True,
+        )
+    )
+
+    X = disease_df.drop(
+        columns=[
+            "target",
+        ],
+    )
+    y = disease_df["target"]
+
+    return X, y, disease_df
 
 
 def build_model(input_shape: int) -> keras.Model:

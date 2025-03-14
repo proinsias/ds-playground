@@ -6,8 +6,9 @@ import tensorflow as tf
 from loguru import logger
 from sklearn.model_selection import train_test_split
 
-from disease_risk_prediction.data import fetch_health_data, validate_health_data
-from disease_risk_prediction.preprocess import preprocess_training_data
+import disease_risk_prediction.constants as c
+from disease_risk_prediction.data import HealthTrainingDataValidator, fetch_health_data
+from disease_risk_prediction.preprocess import get_preprocess_pipeline, get_training_df
 from disease_risk_prediction.train import build_model
 
 # See TensorFlow version.
@@ -19,13 +20,19 @@ logger.info(
 )
 
 # Fetch and preview data
-df = fetch_health_data()
-df = validate_health_data(df)
-logger.info(df.head())
+health_df = fetch_health_data()
+logger.info(health_df.head())
 
-X, ys, preprocessor = preprocess_training_data(df)
+preprocessor = get_preprocess_pipeline()
+X = preprocessor.fit_transform(health_df)  # FIXME: Save preprocessor to file.
+ys = HealthTrainingDataValidator().fit_transform(health_df)
+
+training_df = get_training_df(X, ys)
+
+
 
 # FIXME: Add in from train.py
+
 
 X_train, X_test, y_train, y_test = train_test_split(
     X_asthma,
