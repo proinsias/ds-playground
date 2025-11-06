@@ -2,12 +2,13 @@
 name = "gilbert-shannon-reeds"
 version = "0.0.1"
 description = "Python implementation of the Gilbert-Shannon-Reeds model for shuffling playing cards."
-authors = ["Francis T. O'Donovan <proinsias@users.noreply.github.com>"]
 license = { text = "MIT License" }
-repository = "https://github.com/proinsias/gilbert-shannon-reeds"
-documentation = "https://github.com/proinsias/gilbert-shannon-reeds"
 readme = "README.md"
 requires-python = ">=3.10"
+classifiers = [
+    "Programming Language :: Python :: 3",
+
+]
 
 dependencies = [
     "ds-utils",
@@ -22,6 +23,11 @@ dependencies = [
     "scipy>=1.9.3",
     "pyyaml>=6.0",
 ]
+
+[build-system]
+# Needed to ensure uv sync will auto-add the project as editable dependency.
+requires = ["setuptools>=42"]
+build-backend = "setuptools.build_meta"
 
 [dependency-groups]
 dev = [

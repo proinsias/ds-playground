@@ -13,7 +13,7 @@ default_install_hook_types:
 
 repos:
     - repo: https://github.com/pre-commit/pre-commit-hooks
-      rev: v5.0.0
+      rev: v6.0.0
       hooks:
           # General
           - id: check-added-large-files
@@ -44,7 +44,7 @@ repos:
     # General
 
     - repo: https://github.com/sirosen/texthooks
-      rev: 0.6.8
+      rev: 0.7.1
       hooks:
           - id: fix-smartquotes
           - id: fix-ligatures
@@ -72,12 +72,12 @@ repos:
                 - --verbose
 
     - repo: https://github.com/ikamensh/flynt/
-      rev: 1.0.1
+      rev: 1.0.6
       hooks:
           - id: flynt
 
     - repo: https://github.com/asottile/blacken-docs
-      rev: 1.19.1
+      rev: 1.20.0
       hooks:
           - id: blacken-docs
 
@@ -87,12 +87,12 @@ repos:
           - id: auto-walrus
 
     - repo: https://github.com/asottile/add-trailing-comma
-      rev: v3.1.0
+      rev: v3.2.0
       hooks:
           - id: add-trailing-comma
 
     - repo: https://github.com/PyCQA/bandit
-      rev: 1.8.2
+      rev: 1.8.6
       hooks:
           - id: bandit
 
@@ -102,7 +102,7 @@ repos:
           - id: dead
 
     - repo: https://github.com/astral-sh/ruff-pre-commit
-      rev: "v0.9.6"
+      rev: "v0.14.0"
       hooks:
           - id: ruff
             args: [--fix, --exit-non-zero-on-fix]
@@ -149,7 +149,7 @@ repos:
     # YAML
 
     - repo: https://github.com/adrienverge/yamllint
-      rev: v1.35.1
+      rev: v1.37.1
       hooks:
           - id: yamllint
             args: [-c=.yamllint.yml]
@@ -157,7 +157,7 @@ repos:
     # SQL
 
     - repo: https://github.com/sqlfluff/sqlfluff
-      rev: 3.3.1
+      rev: 3.4.2
       hooks:
           - id: sqlfluff-lint
           # For dbt projects, this installs the dbt "extras".
@@ -189,14 +189,14 @@ repos:
             exclude: .git/COMMIT_EDITMSG
 
     - repo: https://github.com/sirosen/check-jsonschema
-      rev: 0.31.1
+      rev: 0.34.0
       hooks:
           - id: check-github-actions
           - id: check-github-workflows
           - id: check-readthedocs
 
     - repo: https://github.com/zricethezav/gitleaks
-      rev: v8.23.3
+      rev: v8.28.0
       hooks:
           - id: gitleaks
 
@@ -206,12 +206,12 @@ repos:
           - id: actionlint
 
     - repo: https://github.com/MarcoGorelli/cython-lint
-      rev: v0.16.6
+      rev: v0.17.0
       hooks:
           - id: cython-lint
 
     - repo: https://github.com/lycheeverse/lychee.git
-      rev: lychee-v0.18.1
+      rev: nightly
       hooks:
           - id: lychee
             args: ["--cache", "--suggest"]
