@@ -1,0 +1,77 @@
+---
+pull_request_rules:
+  - name: label Python changes
+    conditions:
+      - files ~= \.py$
+    actions:
+      label:
+        add:
+          - python
+
+  - name: label Jupyter notebook changes
+    conditions:
+      - files ~= \.ipynb$
+    actions:
+      label:
+        add:
+          - notebooks
+
+  - name: label CI / GitHub config changes
+    conditions:
+      - files ~= ^\.github/
+    actions:
+      label:
+        add:
+          - ci
+
+  - name: label dependency changes
+    conditions:
+      - files ~=
+        (pyproject\.toml|uv\.lock|mise\.toml|\.pre-commit-config\.yaml)$
+    actions:
+      label:
+        add:
+          - dependencies
+
+  - name: block WIP pull requests
+    conditions:
+      - label = wip
+    actions:
+      comment:
+        message: >
+          This pull request is marked **WIP** and will not be merged until the
+          `wip` label is removed.
+
+  - name: dismiss stale reviews on new commits
+    conditions:
+      - base = main
+    actions:
+      dismiss_reviews:
+        changes_requested: true
+        approved: true
+        message: Approval dismissed — new commits were pushed.
+
+  - name: auto-merge when approved and checks pass
+    conditions:
+      - base = main
+      - "#approved-reviews-by >= 1"
+      - label != wip
+      - "#changes-requested-reviews-by = 0"
+    actions:
+      merge:
+        method: squash
+
+  - name: delete head branch after merge
+    conditions:
+      - merged
+    actions:
+      delete_head_branch: {}
+
+merge_protections:
+  - name: Require approval before merging to main
+    if:
+      - base = main
+    success_conditions:
+      - "#approved-reviews-by >= 1"
+      - label != wip
+      - "#changes-requested-reviews-by = 0"
