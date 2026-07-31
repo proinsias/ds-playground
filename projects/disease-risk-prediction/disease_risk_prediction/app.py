@@ -30,7 +30,6 @@ ys = HealthTrainingDataValidator().fit_transform(health_df)
 training_df = get_training_df(X, ys)
 
 
-
 # FIXME: Add in from train.py
 
 

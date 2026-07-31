@@ -40,6 +40,7 @@ IPython 8.0.1+, 7.31.1+ and 5.11+ disable this behavior for security reason as d
 So now, each ``.ipynb`` must explicitly modify its own `sys.path` which is what this module offers
 as convenience.
 """
+
 import os
 import subprocess  # nosec: B404
 import sys

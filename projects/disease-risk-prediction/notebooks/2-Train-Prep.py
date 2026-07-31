@@ -35,33 +35,22 @@ import sklearn.compose
 import sklearn.dummy
 import umap
 import umap.plot
-import xgboost as xgb
-import ydata_profiling
 from dbscan import DBSCAN
 from IPython.core.interactiveshell import InteractiveShell
-from openTSNE import TSNE
 from sklearn.cluster import KMeans
 from sklearn.decomposition import PCA
 from sklearn.feature_selection import f_classif, mutual_info_classif, SelectKBest
-from sklearn.metrics import adjusted_rand_score, classification_report
+from sklearn.metrics import adjusted_rand_score
 from sklearn.model_selection import train_test_split
-from sklearn.pipeline import Pipeline
-from sklearn.utils.class_weight import compute_class_weight
-from yellowbrick.features import joint_plot, Manifold, pca_decomposition
-from yellowbrick.features.manifold import manifold_embedding
+from yellowbrick.features import joint_plot
 from yellowbrick.features.pcoords import parallel_coordinates
 from yellowbrick.features.radviz import radviz
 
 import disease_risk_prediction.constants as c
-from disease_risk_prediction.data import (
-    fetch_health_data,
-    HealthTrainingDataValidator,
-)
 from disease_risk_prediction.preprocess import (
-    get_preprocess_pipeline,
     get_training_df,
 )
-from disease_risk_prediction.train import build_model, get_X_y_df
+from disease_risk_prediction.train import get_X_y_df
 
 
 # %%
@@ -117,7 +106,7 @@ training_df.head()
 # %%
 
 # %%
-disease = 'asthms1'
+disease = "asthms1"
 X, y, disease_df = get_X_y_df(training_df, disease)
 
 # %% [markdown]
@@ -125,18 +114,18 @@ X, y, disease_df = get_X_y_df(training_df, disease)
 
 # %%
 data = {
-    'disease': [],
-    'perc_0': [],
+    "disease": [],
+    "perc_0": [],
 }
 
-for disease, groupdf in training_df.groupby('disease'):
-    s = groupdf['target'].value_counts(normalize=True)
-    data['disease'].append(disease)
-    data['perc_0'].append(int(100 * s[0]))
+for disease, groupdf in training_df.groupby("disease"):
+    s = groupdf["target"].value_counts(normalize=True)
+    data["disease"].append(disease)
+    data["perc_0"].append(int(100 * s[0]))
 
 pd.DataFrame(data=data).assign(
-    diff_perc_0=lambda x: abs(x.perc_0 - 50)
-).sort_values(by='diff_perc_0')
+    diff_perc_0=lambda x: abs(x.perc_0 - 50),
+).sort_values(by="diff_perc_0")
 
 
 # %% [markdown]
@@ -144,6 +133,7 @@ pd.DataFrame(data=data).assign(
 
 # %% [markdown]
 # ### radvix
+
 
 # %%
 def radvix_disease(training_df, disease):
@@ -159,17 +149,18 @@ def radvix_disease(training_df, disease):
 
 
 # %%
-for disease in training_df['disease'].unique():
+for disease in training_df["disease"].unique():
     radvix_disease(training_df, disease)
 
 
 # %% [markdown]
 # ### parallel_coordinates
 
+
 # %%
 def parallel_coordinates_disease(training_df, disease):
     X, y, _ = get_X_y_df(training_df, disease)
-    
+
     _ = parallel_coordinates(
         X,
         y,
@@ -191,23 +182,24 @@ parallel_coordinates_disease(training_df, disease)
 # %% [markdown]
 # ### f_classif
 
+
 # %%
 def f_classif_disease(training_df, disease):
     X, y, _ = get_X_y_df(training_df, disease)
-    
+
     f_values, _ = f_classif(X, y)
 
-    # Higher Fisher’s Score → better class separability for that feature.
+    # Higher Fisher's Score → better class separability for that feature.
 
-    ax = pd.Series(f_values).hist();
-    ax.set_xlabel('Fisher score');
-    ax.set_ylabel('Number of features');
-    ax.set_title(f'Distribution of Fisher sources for {disease}');
-    plt.show();
+    ax = pd.Series(f_values).hist()
+    ax.set_xlabel("Fisher score")
+    ax.set_ylabel("Number of features")
+    ax.set_title(f"Distribution of Fisher sources for {disease}")
+    plt.show()
 
 
 # %%
-for disease in training_df['disease'].unique():
+for disease in training_df["disease"].unique():
     f_classif_disease(training_df, disease)
 
 
@@ -219,10 +211,11 @@ for disease in training_df['disease'].unique():
 #
 # https://www.scikit-yb.org/en/latest/api/target/feature_correlation.html
 
+
 # %%
 def mutual_info_classif_disease(training_df, disease):
     X, y, _ = get_X_y_df(training_df, disease)
-    
+
     m_values = mutual_info_classif(
         X=X,
         y=y,
@@ -230,15 +223,15 @@ def mutual_info_classif_disease(training_df, disease):
         n_jobs=-1,
     )
 
-    ax = pd.Series(m_values).hist(bins=50);
-    ax.set_xlabel('Mutual information');
-    ax.set_ylabel('Number of features');
-    ax.set_title(f'Distribution of mutual information for {disease}');
-    plt.show();
+    ax = pd.Series(m_values).hist(bins=50)
+    ax.set_xlabel("Mutual information")
+    ax.set_ylabel("Number of features")
+    ax.set_title(f"Distribution of mutual information for {disease}")
+    plt.show()
 
 
 # %%
-for disease in training_df['disease'].unique():
+for disease in training_df["disease"].unique():
     mutual_info_classif_disease(training_df, disease)
 
 
@@ -250,39 +243,41 @@ for disease in training_df['disease'].unique():
 #
 # https://www.scikit-yb.org/en/latest/api/target/feature_correlation.html
 
+
 # %%
 def corr_disease(training_df, disease):
     _, _, disease_df = get_X_y_df(training_df, disease)
-    
+
     corr_df = disease_df.corr()
-    ax = corr_df.loc[corr_df.index != 'target', 'target'].hist();
-    ax.set_xlabel('Pearson correlation');
-    ax.set_ylabel('Number of features');
-    ax.set_title(f'Distribution of Pearson correlation for {disease}');
-    plt.show();
+    ax = corr_df.loc[corr_df.index != "target", "target"].hist()
+    ax.set_xlabel("Pearson correlation")
+    ax.set_ylabel("Number of features")
+    ax.set_title(f"Distribution of Pearson correlation for {disease}")
+    plt.show()
 
 
 # %%
-for disease in training_df['disease'].unique():
+for disease in training_df["disease"].unique():
     corr_disease(training_df, disease)
 
 
 # %% [markdown]
 # ### pscore
 
+
 # %%
 def ppscore_disease(training_df, disease):
     _, _, disease_df = get_X_y_df(training_df, disease)
 
-    print(f'{disease}:')
-    
+    print(f"{disease}:")
+
     display(
-        pps.predictors(disease_df, y="target")['ppscore'].value_counts()
+        pps.predictors(disease_df, y="target")["ppscore"].value_counts(),
     )
 
 
 # %%
-for disease in training_df['disease'].unique():
+for disease in training_df["disease"].unique():
     ppscore_disease(training_df, disease)
 
 
@@ -294,10 +289,11 @@ for disease in training_df['disease'].unique():
 #
 # A higher Adjusted Rand Index means the clustering aligns well with class labels — indicating good separability.
 
+
 # %%
 def kmeans_disease(training_df, disease):
     X, y, _ = get_X_y_df(training_df, disease)
-    
+
     kmeans = KMeans(n_clusters=2, random_state=c.RANDOM_STATE)
     clusters = kmeans.fit_predict(X)
     score = adjusted_rand_score(y, clusters)
@@ -305,17 +301,18 @@ def kmeans_disease(training_df, disease):
 
 
 # %%
-for disease in training_df['disease'].unique():
+for disease in training_df["disease"].unique():
     kmeans_disease(training_df, disease)
 
 
 # %% [markdown]
 # ### sklearn dbscan
 
+
 # %%
 def sklearn_dbscan_disease(training_df, disease):
     X, y, _ = get_X_y_df(training_df, disease)
-    
+
     model = sklearn.cluster.DBSCAN(eps=1.25, n_jobs=-1)
     clusters = model.fit_predict(X)
     score = adjusted_rand_score(y, clusters)
@@ -325,12 +322,13 @@ def sklearn_dbscan_disease(training_df, disease):
 # %%
 # %%time
 
-for disease in training_df['disease'].unique():
+for disease in training_df["disease"].unique():
     sklearn_dbscan_disease(training_df, disease)
 
 
 # %% [markdown]
 # ### dbscan
+
 
 # %%
 def dbscan_disease(training_df, disease):
@@ -338,13 +336,13 @@ def dbscan_disease(training_df, disease):
 
     pca = PCA(n_components=20)
     X = pca.fit_transform(X)
-    
+
     clusters, _ = DBSCAN(X, eps=0.3, min_samples=10)
-    
+
     score = adjusted_rand_score(y, clusters)
     print(f"Adjusted rand index for {disease}: {score:.2f}")
 
-    gc.collect();
+    gc.collect()
 
 
 # %%
@@ -359,33 +357,38 @@ def dbscan_disease(training_df, disease):
 # %% [markdown]
 # ### hdbscan
 
+
 # %%
 def hdbscan_disease(training_df, disease):
     X, y, _ = get_X_y_df(training_df, disease)
 
     pca = PCA(n_components=20)
     X = pca.fit_transform(X)
-    
+
     model = hdbscan.HDBSCAN(
         core_dist_n_jobs=-1,
         min_cluster_size=10,
     )
     clusters = model.fit_predict(X)
-    
+
     score = adjusted_rand_score(y, clusters)
     print(f"Adjusted rand index for {disease}: {score:.2f}")
 
     model = None
-    gc.collect();
+    gc.collect()
 
 
 # %%
 # %%time
 
 with warnings.catch_warnings():
-    warnings.filterwarnings("ignore", category=FutureWarning, message=".*force_all_finite.*")
+    warnings.filterwarnings(
+        "ignore",
+        category=FutureWarning,
+        message=".*force_all_finite.*",
+    )
 
-    for disease in training_df['disease'].unique():
+    for disease in training_df["disease"].unique():
         hdbscan_disease(training_df, disease)
 
 
@@ -395,21 +398,24 @@ with warnings.catch_warnings():
 # %%
 # yellowbrick PCA didn't work for me.
 
+
 def pca_disease(training_df, disease):
     X, y, _ = get_X_y_df(training_df, disease)
-    
+
     pca = PCA(n_components=2)
-    X_pca = pca.fit_transform(X).to_numpy()  # NB To avoid issue with X being a DataFrame.
-    
-    plt.scatter(X_pca[:, 0], X_pca[:, 1], c=y, cmap='viridis', alpha=0.5);
-    plt.xlabel('PC1');
-    plt.ylabel('PC2');
-    plt.title(f'PCA Visualization of Class Separability for {disease}');
-    plt.show();
+    X_pca = pca.fit_transform(
+        X,
+    ).to_numpy()  # NB To avoid issue with X being a DataFrame.
+
+    plt.scatter(X_pca[:, 0], X_pca[:, 1], c=y, cmap="viridis", alpha=0.5)
+    plt.xlabel("PC1")
+    plt.ylabel("PC2")
+    plt.title(f"PCA Visualization of Class Separability for {disease}")
+    plt.show()
 
 
 # %%
-for disease in training_df['disease'].unique():
+for disease in training_df["disease"].unique():
     pca_disease(training_df, disease)
 
 
@@ -419,9 +425,10 @@ for disease in training_df['disease'].unique():
 # %%
 # yellowbrick PCA didn't work for me - actually I think I just needed to add to_numpy().
 
+
 def pca_3d_disease(training_df, disease):
     X, y, _ = get_X_y_df(training_df, disease)
-    
+
     # Apply PCA with 3 components
     pca = PCA(n_components=3)
     X_pca = pca.fit_transform(X).to_numpy()
@@ -432,13 +439,12 @@ def pca_3d_disease(training_df, disease):
         y=X_pca[:, 1],
         z=X_pca[:, 2],
         color=y,
-        labels={'x': 'PC1', 'y': 'PC2', 'z': 'PC3', 'color': 'Class'},
-        title=f'3D PCA Visualization of Class Separability for {disease}',
+        labels={"x": "PC1", "y": "PC2", "z": "PC3", "color": "Class"},
+        title=f"3D PCA Visualization of Class Separability for {disease}",
         opacity=0.5,
-    );
+    )
 
-    fig.show();
-
+    fig.show()
 
 
 # %%
@@ -508,19 +514,20 @@ def pca_3d_disease(training_df, disease):
 # %% [markdown]
 # ### umap
 
+
 # %%
 def umap_disease(training_df, disease):
     X, y, _ = get_X_y_df(training_df, disease)
-    
-    train_size = 10 ** 4  # Out of 221397.
-    
+
+    train_size = 10**4  # Out of 221397.
+
     selectk = SelectKBest(
         k=5,
         score_func=f_classif,
     )
-    
+
     X_k = selectk.fit_transform(X, y)
-    
+
     X_k_sample, _, y_sample, _ = train_test_split(
         X_k,
         y,
@@ -529,17 +536,17 @@ def umap_disease(training_df, disease):
         shuffle=True,
         stratify=y,
     )
-    
+
     mapper = umap.UMAP().fit(
         X_k_sample,
         y_sample,
     )
 
-    fig, ax = plt.subplots();
-    
+    fig, ax = plt.subplots()
+
     umap.plot.points(mapper, labels=y_sample, ax=ax)
 
-    plt.show();
+    plt.show()
 
 
 # %%
@@ -550,9 +557,13 @@ def umap_disease(training_df, disease):
 # %%time
 
 with warnings.catch_warnings():
-    warnings.filterwarnings("ignore", category=FutureWarning, message=".*force_all_finite.*")
+    warnings.filterwarnings(
+        "ignore",
+        category=FutureWarning,
+        message=".*force_all_finite.*",
+    )
 
-    for disease in training_df['disease'].unique():
+    for disease in training_df["disease"].unique():
         print(disease)
         umap_disease(training_df, disease)
 
@@ -566,6 +577,6 @@ visualizer = joint_plot(X, y, columns="menthlth")
 # ### violinplot
 
 # %%
-sns.violinplot(x=y, y=X["menthlth"]);
-plt.title('Feature Distribution by Class');
-plt.show();
+sns.violinplot(x=y, y=X["menthlth"])
+plt.title("Feature Distribution by Class")
+plt.show()

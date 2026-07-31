@@ -136,21 +136,21 @@ power_transformer = sklearn.preprocessing.PowerTransformer(method="yeo-johnson")
 power_cols = ["children", "physhlth", "menthlth"]
 log_cols = ["wtkg3", "htm4"]
 passthrough_cols = [
-col for col in valid_health_df.columns if col not in [*power_cols, *log_cols]
+    col for col in valid_health_df.columns if col not in [*power_cols, *log_cols]
 ]
 
 preprocessor = sklearn.compose.ColumnTransformer(
-[
-    ("log", log_transformer, log_cols),
-    ("power", power_transformer, power_cols),
-    ("num", "passthrough", passthrough_cols),
-],
-verbose_feature_names_out=False,  # Don't prepend to the feature names.
+    [
+        ("log", log_transformer, log_cols),
+        ("power", power_transformer, power_cols),
+        ("num", "passthrough", passthrough_cols),
+    ],
+    verbose_feature_names_out=False,  # Don't prepend to the feature names.
 )
 
 temp_df = pd.DataFrame(
-data=preprocessor.fit_transform(valid_health_df),
-columns=preprocessor.get_feature_names_out(),
+    data=preprocessor.fit_transform(valid_health_df),
+    columns=preprocessor.get_feature_names_out(),
 )
 
 # %%
@@ -204,10 +204,11 @@ def plot_correlation_heatmap(df: pd.DataFrame, threshold: float = 0.5) -> None:
     corr_matrix = df.corr().abs()
     high_corr = corr_matrix[corr_matrix > threshold]
 
-    plt.figure(figsize=(10, 8));
-    sns.heatmap(high_corr, cmap='coolwarm', annot=True);
-    plt.title('Correlation Heatmap (Threshold > {:.1f})'.format(threshold));
-    plt.show();
+    plt.figure(figsize=(10, 8))
+    sns.heatmap(high_corr, cmap="coolwarm", annot=True)
+    plt.title(f"Correlation Heatmap (Threshold > {threshold:.1f})")
+    plt.show()
+
 
 plot_correlation_heatmap(X)
 
@@ -238,23 +239,26 @@ X_preproc = preprocessor.fit_transform(X)
 n_jobs = -1
 vif_values = Parallel(
     n_jobs=n_jobs,
-)(delayed(variance_inflation_factor)(X_preproc.values, i) for i in range(X_preproc.shape[1]))
+)(
+    delayed(variance_inflation_factor)(X_preproc.values, i)
+    for i in range(X_preproc.shape[1])
+)
 
 vif_data = pd.DataFrame(
     data={
         "feature": X_preproc.columns,
         "VIF": vif_values,
-    }
+    },
 )
 
 # %%
-vif.sort_values(by='VIF').reset_index(drop=True)
+vif.sort_values(by="VIF").reset_index(drop=True)
 
 # %%
-vif['VIF'].describe()
+vif["VIF"].describe()
 
 # %%
-vif['VIF'].hist(bins=50);
+vif["VIF"].hist(bins=50)
 
 # %%
 threshold1 = 5
@@ -264,20 +268,23 @@ X_reduced1 = X_preproc.drop(columns=high_vif_features1)
 # %%
 vif_values1 = Parallel(
     n_jobs=n_jobs,
-)(delayed(variance_inflation_factor)(X_reduced1.values, i) for i in range(X_reduced1.shape[1]))
+)(
+    delayed(variance_inflation_factor)(X_reduced1.values, i)
+    for i in range(X_reduced1.shape[1])
+)
 
 vif1 = pd.DataFrame(
     data={
         "feature": X_reduced1.columns,
         "VIF": vif_values1,
-    }
+    },
 )
 
 # %%
-vif1.sort_values(by='VIF').reset_index(drop=True)
+vif1.sort_values(by="VIF").reset_index(drop=True)
 
 # %%
-vif1['VIF'].hist(bins=50);
+vif1["VIF"].hist(bins=50)
 
 # %% [markdown]
 # ## Pre-process data

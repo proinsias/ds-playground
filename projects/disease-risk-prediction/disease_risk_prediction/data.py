@@ -285,7 +285,7 @@ class HealthDataValidator(BaseEstimator, TransformerMixin):
             [
                 c.US_STATES_COORDINATES[c.US_STATES_FIPS[state]][0],
                 c.US_STATES_COORDINATES[c.US_STATES_FIPS[state]][1],
-            ]
+            ],
         )
 
 

@@ -19,15 +19,12 @@
 # ## Imports
 
 # %%
-import gc
-import warnings
 from collections import Counter
 
 import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-import plotly.express as px
 import seaborn as sns
 import sklearn.preprocessing
 import sklearn.compose
@@ -37,19 +34,14 @@ from imblearn.combine import SMOTETomek
 from imblearn.over_sampling import SMOTE
 from imblearn.under_sampling import RandomUnderSampler
 from IPython.core.interactiveshell import InteractiveShell
-from sklearn.cluster import KMeans
-from sklearn.decomposition import PCA
 
-from sklearn.feature_selection import f_classif, mutual_info_classif, SelectKBest, VarianceThreshold, SelectorMixin
-from sklearn.metrics import adjusted_rand_score, classification_report
+from sklearn.feature_selection import mutual_info_classif, SelectorMixin
+from sklearn.metrics import classification_report
 from sklearn.model_selection import train_test_split
 from sklearn.pipeline import Pipeline
 from sklearn.utils.class_weight import compute_class_weight
 
 import disease_risk_prediction.constants as c
-from disease_risk_prediction.data import (
-    fetch_health_data,
-)
 from disease_risk_prediction.preprocess import (
     get_training_df,
 )
@@ -103,12 +95,13 @@ training_df.shape
 training_df.head()
 
 # %%
-disease = 'asthms1'
+disease = "asthms1"
 X, y, disease_df = get_X_y_df(training_df, disease)
 
 
 # %% [markdown]
 # ## Drop features with low signal with target
+
 
 # %%
 class MutualInfoThresholdSelector(SelectorMixin, BaseEstimator):
@@ -125,12 +118,17 @@ class MutualInfoThresholdSelector(SelectorMixin, BaseEstimator):
     """
 
     # FIXME: threshold is very low, but I don't want to throw away too many features just yet.
-    def __init__(self, threshold: float = 0.001, discrete_features: str | bool = 'auto', random_state: int | None = None):
+    def __init__(
+        self,
+        threshold: float = 0.001,
+        discrete_features: str | bool = "auto",
+        random_state: int | None = None,
+    ):
         self.threshold = threshold
         self.discrete_features = discrete_features
         self.random_state = random_state
 
-    def fit(self, X: np.ndarray, y: np.ndarray) -> 'MutualInfoThresholdSelector':
+    def fit(self, X: np.ndarray, y: np.ndarray) -> "MutualInfoThresholdSelector":
         """
         Compute mutual information scores and determine which features to keep.
 
@@ -141,7 +139,12 @@ class MutualInfoThresholdSelector(SelectorMixin, BaseEstimator):
         Returns:
         - self: Fitted selector.
         """
-        self.mi_scores_ = mutual_info_classif(X, y, discrete_features=self.discrete_features, random_state=self.random_state)
+        self.mi_scores_ = mutual_info_classif(
+            X,
+            y,
+            discrete_features=self.discrete_features,
+            random_state=self.random_state,
+        )
         return self
 
     def _get_support_mask(self) -> np.ndarray:
@@ -166,7 +169,6 @@ class MutualInfoThresholdSelector(SelectorMixin, BaseEstimator):
         return X[:, self._get_support_mask()]
 
 
-
 # %%
 mi = MutualInfoThresholdSelector()
 X_mi = mi.fit_transform(X_vif.to_numpy(), y)
@@ -182,7 +184,7 @@ X_vif.shape, X_mi.shape
 
 # %%
 X_rus, y_rus = RandomUnderSampler(
-    sampling_strategy='auto',
+    sampling_strategy="auto",
     random_state=c.RANDOM_STATE,
 ).fit_resample(X, y)
 
@@ -194,7 +196,7 @@ print(f"Class distribution after RandomUnderSampler: {Counter(y_rus)}")
 
 # %%
 X_smote, y_smote = SMOTE(
-    sampling_strategy='auto',
+    sampling_strategy="auto",
     random_state=c.RANDOM_STATE,
 ).fit_resample(X, y)
 
@@ -207,7 +209,7 @@ print(f"Class distribution after SMOTE: {Counter(y_smote)}")
 # %%
 # %%time
 X_smt, y_smt = SMOTETomek(
-    sampling_strategy='auto',
+    sampling_strategy="auto",
     random_state=c.RANDOM_STATE,
     n_jobs=-1,
 ).fit_resample(X, y)
@@ -220,27 +222,34 @@ print(f"Class distribution after SMT: {Counter(y_smt)}")
 # %%
 
 # %%
-pipeline = Pipeline([
-    ('scaler', StandardScaler()),            # Standardize the features
-    ('smote_tomek', SMOTETomek(
-    sampling_strategy='auto',
-    random_state=c.RANDOM_STATE,
-    n_jobs=-1,
-)),  # Apply SMOTETomek
-    ('classifier', RandomForestClassifier(n_estimators=100, random_state=42))  # Train the model
-])
+pipeline = Pipeline(
+    [
+        ("scaler", StandardScaler()),  # Standardize the features
+        (
+            "smote_tomek",
+            SMOTETomek(
+                sampling_strategy="auto",
+                random_state=c.RANDOM_STATE,
+                n_jobs=-1,
+            ),
+        ),  # Apply SMOTETomek
+        (
+            "classifier",
+            RandomForestClassifier(n_estimators=100, random_state=42),
+        ),  # Train the model
+    ]
+)
 
 
 # %% [markdown]
-# •	Try a shallow network first (1–3 hidden layers) and evaluate performance.
-# •	If underfitting occurs (high training and validation error), experiment with adding more layers or increasing neurons per layer.
-# •	Use techniques like cross-validation and early stopping to monitor generalization.
+# •   Try a shallow network first (1–3 hidden layers) and evaluate performance.
+# •   If underfitting occurs (high training and validation error), experiment with adding more layers or increasing neurons per layer.
+# •   Use techniques like cross-validation and early stopping to monitor generalization.
 
 # %%
 # use xgboost's feature importance! but first do hyper-parameter tuning of xgboost?
 
-import xgboost as xgb
-model = xgb.XGBClassifier(tree_method='gpu_hist')
+model = xgb.XGBClassifier(tree_method="gpu_hist")
 model.fit(X_train, y_train)
 
 # Try an auto ML model
@@ -260,7 +269,11 @@ model.fit(X_train, y_train)
 
 # 1. Load your data (assuming X_asthma and y_asthma are defined)
 X_train, X_test, y_train, y_test = train_test_split(
-    X_asthma, y_asthma, test_size=0.2, random_state=42, stratify=y_asthma
+    X_asthma,
+    y_asthma,
+    test_size=0.2,
+    random_state=42,
+    stratify=y_asthma,
 )
 
 
@@ -269,7 +282,10 @@ def get_feature_importance(X: pd.DataFrame, y: pd.Series) -> pd.Series:
     """Trains a Random Forest and returns feature importances."""
     model = RandomForestClassifier(n_estimators=100, random_state=42)
     model.fit(X, y)
-    return pd.Series(model.feature_importances_, index=X.columns).sort_values(ascending=False)
+    return pd.Series(model.feature_importances_, index=X.columns).sort_values(
+        ascending=False
+    )
+
 
 feature_importance = get_feature_importance(X_train, y_train)
 print("\nTop 10 features by Random Forest importance:\n", feature_importance.head(10))
@@ -288,7 +304,6 @@ import pandas as pd
 import numpy as np
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.feature_selection import mutual_info_classif
 from sklearn.metrics import accuracy_score, roc_auc_score, f1_score
 from tensorflow import keras
 from keras.models import Sequential
@@ -300,15 +315,15 @@ from keras.callbacks import EarlyStopping
 def build_model(input_dim: int) -> Sequential:
     """Creates a simple Keras binary classification model."""
     model = Sequential()
-    model.add(Dense(64, activation='relu', input_shape=(input_dim,)))
+    model.add(Dense(64, activation="relu", input_shape=(input_dim,)))
     model.add(Dropout(0.3))
-    model.add(Dense(32, activation='relu'))
-    model.add(Dense(1, activation='sigmoid'))
+    model.add(Dense(32, activation="relu"))
+    model.add(Dense(1, activation="sigmoid"))
 
     model.compile(
-        optimizer='adam',
-        loss='binary_crossentropy',
-        metrics=['accuracy', keras.metrics.AUC(name='auc')]
+        optimizer="adam",
+        loss="binary_crossentropy",
+        metrics=["accuracy", keras.metrics.AUC(name="auc")],
     )
     return model
 
@@ -319,7 +334,9 @@ feature_set_sizes = [10, 20, 50, 100]
 results = []
 
 for size in feature_set_sizes:
-    selected_features = list(set(mi_scores.head(size).index) | set(rf_importance.head(size).index))
+    selected_features = list(
+        set(mi_scores.head(size).index) | set(rf_importance.head(size).index)
+    )
 
     X_train_selected = X_train[selected_features]
     X_test_selected = X_test[selected_features]
@@ -327,7 +344,9 @@ for size in feature_set_sizes:
     model = build_model(input_dim=X_train_selected.shape[1])
 
     # Early stopping to avoid overfitting
-    early_stopping = EarlyStopping(monitor='val_loss', patience=5, restore_best_weights=True)
+    early_stopping = EarlyStopping(
+        monitor="val_loss", patience=5, restore_best_weights=True
+    )
 
     history = model.fit(
         X_train_selected,
@@ -336,7 +355,7 @@ for size in feature_set_sizes:
         epochs=50,
         batch_size=32,
         callbacks=[early_stopping],
-        verbose=0
+        verbose=0,
     )
 
     # Evaluate model
@@ -347,14 +366,16 @@ for size in feature_set_sizes:
     auc = roc_auc_score(y_test, y_pred)
     f1 = f1_score(y_test, y_pred_labels)
 
-    results.append({'Feature Count': size, 'Accuracy': acc, 'AUC': auc, 'F1-score': f1})
-    print(f"Feature Count: {size} | Accuracy: {acc:.4f} | AUC: {auc:.4f} | F1-score: {f1:.4f}")
+    results.append({"Feature Count": size, "Accuracy": acc, "AUC": auc, "F1-score": f1})
+    print(
+        f"Feature Count: {size} | Accuracy: {acc:.4f} | AUC: {auc:.4f} | F1-score: {f1:.4f}"
+    )
 
 
 # 5. Summarize results
 results_df = pd.DataFrame(results)
 print("\nPerformance Summary:")
-print(results_df.sort_values(by='AUC', ascending=False))
+print(results_df.sort_values(by="AUC", ascending=False))
 
 # %%
 
@@ -366,17 +387,24 @@ from sklearn.model_selection import train_test_split, cross_val_score
 from sklearn.pipeline import Pipeline
 from sklearn.preprocessing import StandardScaler
 from sklearn.datasets import make_classification
-from sklearn.metrics import classification_report
 from scikeras.wrappers import KerasClassifier
-from tensorflow import keras
 from tensorflow.keras import layers
 
 # Create an imbalanced dataset
-X, y = make_classification(n_samples=10000, n_features=20, n_classes=2,
-                           weights=[0.95, 0.05], flip_y=0, random_state=42)
+X, y = make_classification(
+    n_samples=10000,
+    n_features=20,
+    n_classes=2,
+    weights=[0.95, 0.05],
+    flip_y=0,
+    random_state=42,
+)
 
 # Split the dataset
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42
+)
+
 
 # Define a simple Keras model
 def create_model(learning_rate: float = 0.001) -> keras.models.Sequential:
@@ -388,28 +416,37 @@ def create_model(learning_rate: float = 0.001) -> keras.models.Sequential:
     Returns:
         keras.models.Sequential: Compiled Keras model.
     """
-    model = keras.models.Sequential([
-        layers.Dense(64, activation='relu', input_shape=(X.shape[1],)),
-        layers.Dense(32, activation='relu'),
-        layers.Dense(1, activation='sigmoid')  # Binary classification
-    ])
+    model = keras.models.Sequential(
+        [
+            layers.Dense(64, activation="relu", input_shape=(X.shape[1],)),
+            layers.Dense(32, activation="relu"),
+            layers.Dense(1, activation="sigmoid"),  # Binary classification
+        ]
+    )
 
-    model.compile(optimizer=keras.optimizers.Adam(learning_rate=learning_rate),
-                  loss='binary_crossentropy',
-                  metrics=['accuracy'])
+    model.compile(
+        optimizer=keras.optimizers.Adam(learning_rate=learning_rate),
+        loss="binary_crossentropy",
+        metrics=["accuracy"],
+    )
     return model
 
+
 # Wrap the Keras model using KerasClassifier
-keras_clf = KerasClassifier(model=create_model, learning_rate=0.001, epochs=10, batch_size=32, verbose=0)
+keras_clf = KerasClassifier(
+    model=create_model, learning_rate=0.001, epochs=10, batch_size=32, verbose=0
+)
 
 # Build the sklearn pipeline
-pipeline = Pipeline([
-    ('scaler', StandardScaler()),         # Standardize the features
-    ('classifier', keras_clf)             # Keras model wrapped as sklearn classifier
-])
+pipeline = Pipeline(
+    [
+        ("scaler", StandardScaler()),  # Standardize the features
+        ("classifier", keras_clf),  # Keras model wrapped as sklearn classifier
+    ]
+)
 
 # Cross-validation scores
-cv_scores = cross_val_score(pipeline, X_train, y_train, cv=5, scoring='f1')
+cv_scores = cross_val_score(pipeline, X_train, y_train, cv=5, scoring="f1")
 
 print(f"Cross-validated F1 scores: {cv_scores}")
 print(f"Mean F1 score: {cv_scores.mean():.4f}")
@@ -433,38 +470,43 @@ from tensorflow.keras.regularizers import l2
 model = Sequential(
     [
         # Input layer with batch normalization and L2 regularization
-        Dense(64, activation="relu", input_shape=(input_shape,), kernel_regularizer=l2(0.01)),
+        Dense(
+            64,
+            activation="relu",
+            input_shape=(input_shape,),
+            kernel_regularizer=l2(0.01),
+        ),
         BatchNormalization(),
         Dropout(0.3),
-
         # Hidden layer 1
         Dense(32, activation="relu", kernel_regularizer=l2(0.01)),
         BatchNormalization(),
         Dropout(0.2),
-
         # Hidden layer 2
         Dense(16, activation="relu", kernel_regularizer=l2(0.01)),
         BatchNormalization(),
-
         # Output layer
         Dense(1, activation="sigmoid"),  # Binary classification
-    ]
+    ],
 )
 
 # %%
 # Adjust learning rate
 learning_rate = 0.001  # Start with a common default, tune if needed
-optimizer = Adam(learning_rate=learning_rate) # Use instead of optimizer="adam" in compile.
+optimizer = Adam(
+    learning_rate=learning_rate
+)  # Use instead of optimizer="adam" in compile.
 
 # Adjust batch size when fitting
 batch_size = 64  # Try 32, 64, 128 and see what works best
 history = model.fit(
-    X_train, y_train,
+    X_train,
+    y_train,
     validation_split=0.2,
     epochs=50,
     batch_size=batch_size,
     callbacks=[early_stopping],
-    verbose=1
+    verbose=1,
 )
 
 # %%
@@ -474,22 +516,24 @@ from wandb.keras import WandbCallback
 wandb.init(project="disease-risk-prediction")
 
 model.fit(
-    X_train, y_train,
+    X_train,
+    y_train,
     epochs=10,
     validation_data=(X_val, y_val),
-    callbacks=[WandbCallback()]
+    callbacks=[WandbCallback()],
 )
 
 # %%
 import wandb
-from sklearn.ensemble import RandomForestClassifier
 from sklearn.datasets import load_iris
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score, classification_report
 
 # Load sample data
 iris = load_iris()
-X_train, X_test, y_train, y_test = train_test_split(iris.data, iris.target, test_size=0.2, random_state=42)
+X_train, X_test, y_train, y_test = train_test_split(
+    iris.data, iris.target, test_size=0.2, random_state=42
+)
 
 # Initialize W&B
 wandb.init(project="sklearn-xgboost-tracking", name="random-forest-experiment")
@@ -498,7 +542,7 @@ wandb.init(project="sklearn-xgboost-tracking", name="random-forest-experiment")
 params = {
     "n_estimators": 100,
     "max_depth": 5,
-    "random_state": 42
+    "random_state": 42,
 }
 wandb.config.update(params)
 
@@ -511,10 +555,14 @@ y_pred = model.predict(X_test)
 accuracy = accuracy_score(y_test, y_pred)
 
 # Log metrics
-wandb.log({
-    "accuracy": accuracy,
-    "classification_report": classification_report(y_test, y_pred, output_dict=True)
-})
+wandb.log(
+    {
+        "accuracy": accuracy,
+        "classification_report": classification_report(
+            y_test, y_pred, output_dict=True
+        ),
+    }
+)
 
 # Finish the run
 wandb.finish()
@@ -528,7 +576,9 @@ from sklearn.metrics import accuracy_score
 
 # Load sample data
 iris = load_iris()
-X_train, X_test, y_train, y_test = train_test_split(iris.data, iris.target, test_size=0.2, random_state=42)
+X_train, X_test, y_train, y_test = train_test_split(
+    iris.data, iris.target, test_size=0.2, random_state=42
+)
 
 # Initialize W&B
 wandb.init(project="sklearn-xgboost-tracking", name="xgboost-experiment")
@@ -539,7 +589,7 @@ params = {
     "num_class": 3,
     "max_depth": 5,
     "learning_rate": 0.1,
-    "n_estimators": 100
+    "n_estimators": 100,
 }
 wandb.config.update(params)
 
@@ -555,10 +605,14 @@ accuracy = accuracy_score(y_test, y_pred)
 wandb.log({"accuracy": accuracy})
 
 # Optionally log feature importance
-wandb.log({"feature_importance": wandb.plot.bar(
-    dict(zip(iris.feature_names, model.feature_importances_)),
-    title="Feature Importance"
-)})
+wandb.log(
+    {
+        "feature_importance": wandb.plot.bar(
+            dict(zip(iris.feature_names, model.feature_importances_)),
+            title="Feature Importance",
+        ),
+    }
+)
 
 # Finish the run
 wandb.finish()
@@ -570,11 +624,12 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.datasets import load_iris
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
-import shap
 
 # Load sample data
 iris = load_iris()
-X_train, X_test, y_train, y_test = train_test_split(iris.data, iris.target, test_size=0.2, random_state=42)
+X_train, X_test, y_train, y_test = train_test_split(
+    iris.data, iris.target, test_size=0.2, random_state=42
+)
 
 # Initialize W&B
 wandb.init(project="sklearn-xgboost-tracking", name="random-forest-with-shap")
@@ -583,7 +638,7 @@ wandb.init(project="sklearn-xgboost-tracking", name="random-forest-with-shap")
 params = {
     "n_estimators": 100,
     "max_depth": 5,
-    "random_state": 42
+    "random_state": 42,
 }
 wandb.config.update(params)
 
@@ -596,9 +651,11 @@ y_pred = model.predict(X_test)
 accuracy = accuracy_score(y_test, y_pred)
 
 # Log metrics
-wandb.log({
-    "accuracy": accuracy,
-})
+wandb.log(
+    {
+        "accuracy": accuracy,
+    }
+)
 
 # SHAP explainability
 explainer = shap.TreeExplainer(model)
@@ -606,11 +663,25 @@ shap_values = explainer.shap_values(X_test)
 
 # Plot SHAP summary plot and log it in W&B
 shap.summary_plot(shap_values, X_test, feature_names=iris.feature_names)
-wandb.log({"shap_summary_plot": wandb.Image(shap.summary_plot(shap_values, X_test, feature_names=iris.feature_names))})
+wandb.log(
+    {
+        "shap_summary_plot": wandb.Image(
+            shap.summary_plot(shap_values, X_test, feature_names=iris.feature_names)
+        )
+    }
+)
 
 # Plot SHAP dependence plot for a particular feature and log it in W&B
 shap.dependence_plot(0, shap_values[0], X_test, feature_names=iris.feature_names)
-wandb.log({"shap_dependence_plot": wandb.Image(shap.dependence_plot(0, shap_values[0], X_test, feature_names=iris.feature_names))})
+wandb.log(
+    {
+        "shap_dependence_plot": wandb.Image(
+            shap.dependence_plot(
+                0, shap_values[0], X_test, feature_names=iris.feature_names
+            )
+        )
+    }
+)
 
 # Finish the run
 wandb.finish()
@@ -625,7 +696,9 @@ from sklearn.metrics import accuracy_score
 
 # Load sample data
 iris = load_iris()
-X_train, X_test, y_train, y_test = train_test_split(iris.data, iris.target, test_size=0.2, random_state=42)
+X_train, X_test, y_train, y_test = train_test_split(
+    iris.data, iris.target, test_size=0.2, random_state=42
+)
 
 # Initialize W&B
 wandb.init(project="sklearn-xgboost-tracking", name="xgboost-with-shap")
@@ -636,7 +709,7 @@ params = {
     "num_class": 3,
     "max_depth": 5,
     "learning_rate": 0.1,
-    "n_estimators": 100
+    "n_estimators": 100,
 }
 wandb.config.update(params)
 
@@ -657,11 +730,25 @@ shap_values = explainer.shap_values(X_test)
 
 # Plot SHAP summary plot and log it in W&B
 shap.summary_plot(shap_values, X_test, feature_names=iris.feature_names)
-wandb.log({"shap_summary_plot": wandb.Image(shap.summary_plot(shap_values, X_test, feature_names=iris.feature_names))})
+wandb.log(
+    {
+        "shap_summary_plot": wandb.Image(
+            shap.summary_plot(shap_values, X_test, feature_names=iris.feature_names)
+        )
+    }
+)
 
 # Plot SHAP dependence plot for a particular feature and log it in W&B
 shap.dependence_plot(0, shap_values[0], X_test, feature_names=iris.feature_names)
-wandb.log({"shap_dependence_plot": wandb.Image(shap.dependence_plot(0, shap_values[0], X_test, feature_names=iris.feature_names))})
+wandb.log(
+    {
+        "shap_dependence_plot": wandb.Image(
+            shap.dependence_plot(
+                0, shap_values[0], X_test, feature_names=iris.feature_names
+            )
+        )
+    }
+)
 
 # Finish the run
 wandb.finish()
@@ -669,7 +756,6 @@ wandb.finish()
 # %%
 import shap
 import wandb
-import tensorflow as tf
 from tensorflow import keras
 from sklearn.datasets import load_iris
 from sklearn.model_selection import train_test_split
@@ -683,29 +769,39 @@ y = iris.target.reshape(-1, 1)
 encoder = OneHotEncoder(sparse=False)
 y_onehot = encoder.fit_transform(y)
 
-X_train, X_test, y_train, y_test = train_test_split(X, y_onehot, test_size=0.2, random_state=42)
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y_onehot, test_size=0.2, random_state=42
+)
 
 # Initialize W&B
 wandb.init(project="keras-with-shap", name="keras-model-with-shap")
 
 # Define and compile the Keras model
-model = keras.Sequential([
-    keras.layers.Dense(64, input_dim=X.shape[1], activation='relu'),
-    keras.layers.Dense(32, activation='relu'),
-    keras.layers.Dense(3, activation='softmax')  # 3 classes for Iris
-])
+model = keras.Sequential(
+    [
+        keras.layers.Dense(64, input_dim=X.shape[1], activation="relu"),
+        keras.layers.Dense(32, activation="relu"),
+        keras.layers.Dense(3, activation="softmax"),  # 3 classes for Iris
+    ]
+)
 
-model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
+model.compile(optimizer="adam", loss="categorical_crossentropy", metrics=["accuracy"])
 
 # Define model hyperparameters
 params = {
     "epochs": 50,
-    "batch_size": 32
+    "batch_size": 32,
 }
 wandb.config.update(params)
 
 # Train the model
-history = model.fit(X_train, y_train, epochs=params["epochs"], batch_size=params["batch_size"], validation_data=(X_test, y_test))
+history = model.fit(
+    X_train,
+    y_train,
+    epochs=params["epochs"],
+    batch_size=params["batch_size"],
+    validation_data=(X_test, y_test),
+)
 
 # Make predictions and evaluate
 y_pred = model.predict(X_test)
@@ -715,16 +811,32 @@ accuracy = accuracy_score(y_test.argmax(axis=1), y_pred.argmax(axis=1))
 wandb.log({"accuracy": accuracy})
 
 # SHAP explainability
-explainer = shap.KernelExplainer(model.predict, X_train)  # Using KernelExplainer for neural networks
+explainer = shap.KernelExplainer(
+    model.predict, X_train
+)  # Using KernelExplainer for neural networks
 shap_values = explainer.shap_values(X_test)
 
 # Plot SHAP summary plot and log it in W&B
 shap.summary_plot(shap_values, X_test, feature_names=iris.feature_names)
-wandb.log({"shap_summary_plot": wandb.Image(shap.summary_plot(shap_values, X_test, feature_names=iris.feature_names))})
+wandb.log(
+    {
+        "shap_summary_plot": wandb.Image(
+            shap.summary_plot(shap_values, X_test, feature_names=iris.feature_names)
+        )
+    }
+)
 
 # Plot SHAP dependence plot for a particular feature and log it in W&B
 shap.dependence_plot(0, shap_values[0], X_test, feature_names=iris.feature_names)
-wandb.log({"shap_dependence_plot": wandb.Image(shap.dependence_plot(0, shap_values[0], X_test, feature_names=iris.feature_names))})
+wandb.log(
+    {
+        "shap_dependence_plot": wandb.Image(
+            shap.dependence_plot(
+                0, shap_values[0], X_test, feature_names=iris.feature_names
+            )
+        )
+    }
+)
 
 # Finish the run
 wandb.finish()
@@ -758,11 +870,11 @@ def create_keras_model(input_shape: int) -> Sequential:
         Sequential: A compiled Keras model.
     """
     model = Sequential()
-    model.add(Dense(64, activation='relu', input_shape=(input_shape,)))
-    model.add(Dense(32, activation='relu'))
-    model.add(Dense(1, activation='sigmoid'))
+    model.add(Dense(64, activation="relu", input_shape=(input_shape,)))
+    model.add(Dense(32, activation="relu"))
+    model.add(Dense(1, activation="sigmoid"))
 
-    model.compile(optimizer=Adam(), loss='binary_crossentropy', metrics=['accuracy'])
+    model.compile(optimizer=Adam(), loss="binary_crossentropy", metrics=["accuracy"])
     return model
 
 
@@ -772,7 +884,7 @@ def learning_curve_keras(
     y: np.ndarray,
     train_sizes: List[float],
     epochs: int = 50,
-    batch_size: int = 32
+    batch_size: int = 32,
 ) -> Tuple[List[float], List[float]]:
     """
     Computes training and validation accuracy for different training set sizes.
@@ -792,22 +904,27 @@ def learning_curve_keras(
     val_accuracies = []
 
     # Split into initial train and validation sets
-    X_train, X_val, y_train, y_val = train_test_split(X, y, test_size=0.2, random_state=42)
+    X_train, X_val, y_train, y_val = train_test_split(
+        X, y, test_size=0.2, random_state=42
+    )
 
     for size in train_sizes:
         # Create a smaller training set based on the current size
-        X_subtrain, _, y_subtrain, _ = train_test_split(X_train, y_train, train_size=size, random_state=42)
+        X_subtrain, _, y_subtrain, _ = train_test_split(
+            X_train, y_train, train_size=size, random_state=42
+        )
 
         model = model_fn(X.shape[1])
 
         # Fit the model
         history = model.fit(
-            X_subtrain, y_subtrain,
+            X_subtrain,
+            y_subtrain,
             validation_data=(X_val, y_val),
             epochs=epochs,
             batch_size=batch_size,
             verbose=0,
-            callbacks=[EarlyStopping(patience=5, restore_best_weights=True)]
+            callbacks=[EarlyStopping(patience=5, restore_best_weights=True)],
         )
 
         # Evaluate on training and validation sets
@@ -825,7 +942,9 @@ def learning_curve_keras(
     return train_accuracies, val_accuracies
 
 
-def plot_learning_curve(train_sizes: List[float], train_acc: List[float], val_acc: List[float]) -> None:
+def plot_learning_curve(
+    train_sizes: List[float], train_acc: List[float], val_acc: List[float]
+) -> None:
     """
     Plots the learning curve.
 
@@ -834,10 +953,10 @@ def plot_learning_curve(train_sizes: List[float], train_acc: List[float], val_ac
         train_acc (List[float]): Training accuracy scores.
         val_acc (List[float]): Validation accuracy scores.
     """
-    plt.plot(train_sizes, train_acc, marker='o', label='Training Accuracy')
-    plt.plot(train_sizes, val_acc, marker='o', label='Validation Accuracy')
-    plt.xlabel('Training Set Size')
-    plt.ylabel('Accuracy')
+    plt.plot(train_sizes, train_acc, marker="o", label="Training Accuracy")
+    plt.plot(train_sizes, val_acc, marker="o", label="Validation Accuracy")
+    plt.xlabel("Training Set Size")
+    plt.ylabel("Accuracy")
     plt.legend()
     plt.grid(True)
     plt.show()
@@ -853,7 +972,9 @@ if __name__ == "__main__":
     train_sizes = np.linspace(0.1, 1.0, 10)
     train_acc, val_acc = learning_curve_keras(create_keras_model, X, y, train_sizes)
 
-    plot_learning_curve(train_sizes, train_acc, val_acc)  # Use LearningCurveDisplay for xgboost
+    plot_learning_curve(
+        train_sizes, train_acc, val_acc
+    )  # Use LearningCurveDisplay for xgboost
 
 
 # %%
@@ -866,11 +987,13 @@ def compare_training(X, y):
         stratify=y,
     )
 
-    class_weights = compute_class_weight('balanced', classes=np.unique(y_train), y=y_train)
+    class_weights = compute_class_weight(
+        "balanced", classes=np.unique(y_train), y=y_train
+    )
 
     class_weight_dict = dict(enumerate(class_weights))
 
-    dummy = sklearn.dummy.DummyClassifier(strategy='prior', random_state=c.RANDOM_STATE)
+    dummy = sklearn.dummy.DummyClassifier(strategy="prior", random_state=c.RANDOM_STATE)
 
     _ = dummy.fit(
         X_train,
@@ -881,7 +1004,7 @@ def compare_training(X, y):
 
     xmodel = xgb.XGBClassifier(
         random_state=c.RANDOM_STATE,
-        scale_pos_weight=len(y_train[y_train == 0])/len(y_train[y_train == 1])
+        scale_pos_weight=len(y_train[y_train == 0]) / len(y_train[y_train == 1]),
     )
 
     _ = xmodel.fit(
@@ -902,38 +1025,43 @@ def compare_training(X, y):
         class_weight=class_weight_dict,
     )
 
-    print(classification_report(y_test, pd.DataFrame(model.predict(X_test)).astype(int)))
+    print(
+        classification_report(y_test, pd.DataFrame(model.predict(X_test)).astype(int))
+    )
 
 
-# %%
-If your classes aren’t well separated, you’ll likely see poor model performance — so increasing class separability can make a huge difference. Here are some practical strategies:
-
-Feature Engineering:
-	1.	Create Interaction Terms:
-Combine features to capture relationships that single features miss.
-
-X['new_feature'] = X['feature1'] * X['feature2']
-
-
-https://levelup.gitconnected.com/4-python-libraries-for-automated-feature-engineering-that-you-should-use-in-2023-54bccecb1683
-https://github.com/feature-engine/feature_engine
-https://github.com/cod3licious/autofeat
-https://github.com/alteryx/featuretools/
-
-
-	2.	Polynomial Features:
-Capture non-linear relationships by adding squared or cubic terms.
-
-from sklearn.preprocessing import PolynomialFeatures
-
-poly = PolynomialFeatures(degree=2, interaction_only=False, include_bias=False)
-X_poly = poly.fit_transform(X)
-
-
-	7.	Class Weights:
-Penalize misclassification of the minority class more heavily.
-
-model.fit(X, y, class_weight='balanced')
+# %% [markdown]
+# If your classes aren't well separated, you'll likely see poor model performance — so increasing class separability can make a huge difference. Here are some practical strategies:
+#
+# Feature Engineering:
+#     1.  Create Interaction Terms:
+# Combine features to capture relationships that single features miss.
+#
+# ```python
+# X['new_feature'] = X['feature1'] * X['feature2']
+# ```
+#
+# https://levelup.gitconnected.com/4-python-libraries-for-automated-feature-engineering-that-you-should-use-in-2023-54bccecb1683
+# https://github.com/feature-engine/feature_engine
+# https://github.com/cod3licious/autofeat
+# https://github.com/alteryx/featuretools/
+#
+#     2.  Polynomial Features:
+# Capture non-linear relationships by adding squared or cubic terms.
+#
+# ```python
+# from sklearn.preprocessing import PolynomialFeatures
+#
+# poly = PolynomialFeatures(degree=2, interaction_only=False, include_bias=False)
+# X_poly = poly.fit_transform(X)
+# ```
+#
+#     7.  Class Weights:
+# Penalize misclassification of the minority class more heavily.
+#
+# ```python
+# model.fit(X, y, class_weight='balanced')
+# ```
 
 # %% [markdown]
 # ## Train asthma

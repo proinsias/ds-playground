@@ -73,7 +73,7 @@ class VIFFeatureDropper(
             data={
                 "feature": X.columns,
                 "VIF": vif_values,
-            }
+            },
         )
 
         # Identify high-VIF features.
@@ -97,7 +97,7 @@ class VIFFeatureDropper(
         """
         if not self.high_vif_features:
             raise NotFittedError(
-                "This VIFFeatureDropper instance is not fitted yet. Call 'fit' first."
+                "This VIFFeatureDropper instance is not fitted yet. Call 'fit' first.",
             )
 
         return X.drop(columns=self.high_vif_features, errors="ignore")

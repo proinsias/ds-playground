@@ -64,6 +64,65 @@ repos:
 
     # Python
 
+    - repo: https://github.com/astral-sh/uv-pre-commit
+      rev: 0.11.21
+      hooks:
+          # Keep uv.lock file up to date
+          - id: uv-lock
+            # Update the project's environment
+          - id: uv-sync
+            args: [--dev, --locked, --upgrade]
+            # Audit the project's dependencies
+          - id: uv-audit
+            env:
+                UV_MALWARE_CHECK: "1"
+          - id: uv-sync
+            name: uv-sync-disease-risk-prediction
+            args:
+                [
+                    --dev,
+                    --locked,
+                    --upgrade,
+                    --directory,
+                    projects/disease-risk-prediction,
+                ]
+            # Audit the project's dependencies
+          - id: uv-audit
+            name: uv-audit-disease-risk-prediction
+            args: [--directory, projects/disease-risk-prediction]
+            env:
+                UV_MALWARE_CHECK: "1"
+          - id: uv-sync
+            name: uv-sync-gilbert-shannon-reeds
+            args:
+                [
+                    --dev,
+                    --locked,
+                    --upgrade,
+                    --directory,
+                    projects/gilbert-shannon-reeds,
+                ]
+            # Audit the project's dependencies
+          - id: uv-audit
+            name: uv-audit-gilbert-shannon-reeds
+            args: [--directory, projects/gilbert-shannon-reeds]
+            env:
+                UV_MALWARE_CHECK: "1"
+          - id: uv-sync
+            name: uv-sync-ds-utils
+            args: [--dev, --locked, --upgrade, --directory, projects/ds-utils]
+            # Audit the project's dependencies
+          - id: uv-audit
+            name: uv-audit-ds-utils
+            args: [--directory, projects/ds-utils]
+            env:
+                UV_MALWARE_CHECK: "1"
+
+    - repo: https://github.com/tsvikas/sync-with-uv
+      rev: v0.6.0
+      hooks:
+          - id: sync-with-uv
+
     - repo: https://github.com/econchick/interrogate
       rev: 1.7.0
       hooks:
@@ -205,7 +264,7 @@ repos:
           - id: cython-lint
 
     - repo: https://github.com/lycheeverse/lychee.git
-      rev: nightly
+      rev: v0.15.1
       hooks:
           - id: lychee
             args: ["--cache", "--suggest"]
