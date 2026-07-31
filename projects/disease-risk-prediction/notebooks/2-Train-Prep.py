@@ -22,6 +22,7 @@
 import gc
 import warnings
 
+import disease_risk_prediction.constants as c
 import hdbscan
 import matplotlib
 import matplotlib.pyplot as plt
@@ -30,29 +31,26 @@ import pandas as pd
 import plotly.express as px
 import ppscore as pps
 import seaborn as sns
-import sklearn.preprocessing
 import sklearn.compose
 import sklearn.dummy
+import sklearn.preprocessing
 import umap
 import umap.plot
 from dbscan import DBSCAN
+from disease_risk_prediction.preprocess import (
+    get_training_df,
+)
+from disease_risk_prediction.train import get_X_y_df
 from IPython.core.interactiveshell import InteractiveShell
 from IPython.display import display
 from sklearn.cluster import KMeans
 from sklearn.decomposition import PCA
-from sklearn.feature_selection import f_classif, mutual_info_classif, SelectKBest
+from sklearn.feature_selection import SelectKBest, f_classif, mutual_info_classif
 from sklearn.metrics import adjusted_rand_score
 from sklearn.model_selection import train_test_split
 from yellowbrick.features import joint_plot
 from yellowbrick.features.pcoords import parallel_coordinates
 from yellowbrick.features.radviz import radviz
-
-import disease_risk_prediction.constants as c
-from disease_risk_prediction.preprocess import (
-    get_training_df,
-)
-from disease_risk_prediction.train import get_X_y_df
-
 
 # %%
 matplotlib.use("nbagg")
@@ -97,7 +95,7 @@ InteractiveShell.ast_node_interactivity = "all"
 training_df = get_training_df(None)
 
 # %%
-training_df.shape
+print(training_df.shape)
 training_df.head()
 
 # %%
@@ -556,7 +554,7 @@ def umap_disease(training_df, disease):
         y_sample,
     )
 
-    fig, ax = plt.subplots()
+    _fig, ax = plt.subplots()
 
     umap.plot.points(mapper, labels=y_sample, ax=ax)
 

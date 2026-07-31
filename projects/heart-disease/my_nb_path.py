@@ -41,14 +41,16 @@ So now, each ``.ipynb`` must explicitly modify its own `sys.path` which is what 
 as convenience.
 """
 
+import logging
 import os
 import subprocess  # nosec: B404
 import sys
 from pathlib import Path
-from typing import Union
+
+logger = logging.getLogger(__name__)
 
 
-def sys_path_append(o: Union[str, os.PathLike]) -> None:
+def sys_path_append(o: str | os.PathLike) -> None:
     """Insert `o` at the front of `sys.path` as a POSIX path, if not already present."""
     posix_path: str = o.as_posix() if isinstance(o, Path) else Path(o).as_posix()
     if posix_path not in sys.path:
@@ -61,6 +63,7 @@ try:
         ["git", "rev-parse", "--show-toplevel"],
         stdout=subprocess.PIPE,
         stderr=subprocess.STDOUT,
+        check=False,
     )
 
     if _p.returncode == 0:
@@ -74,7 +77,6 @@ try:
         ]
         for sp in my_sys_paths:
             sys_path_append(sp)
-except Exception:  # nosec: B110
-    # Not a proper git: no CLI, not a git repo, ...
-    # So, don't do anything to sys.path
-    pass
+except OSError:
+    # Git CLI is not available, so don't do anything to sys.path.
+    logger.debug("Could not locate git repository root.", exc_info=True)

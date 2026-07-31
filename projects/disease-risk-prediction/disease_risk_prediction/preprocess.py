@@ -61,7 +61,7 @@ class VIFFeatureDropper(
         - self
         """
         if not isinstance(X, pd.DataFrame):
-            raise ValueError("Input X must be a pandas DataFrame")
+            raise TypeError("Input X must be a pandas DataFrame")
 
         self.feature_names_in_ = X.columns.to_list()
 

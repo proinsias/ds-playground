@@ -1,9 +1,7 @@
-#!/usr/bin/env python
 """Simulate and verify the Gilbert-Shannon-Reeds riffle-shuffle model."""
 
 # In[1]:
 import multiprocessing as mp
-import typing
 
 # In[2]:
 import matplotlib
@@ -29,7 +27,7 @@ get_ipython().run_line_magic("autoreload", "2")
 # To test the functions, just run `pytest` in the top level of the repository.
 # First, define a function to determine how many cards to split into our right hand.
 # In[4]:
-def get_random_number_for_right_deck(n: int, seed: int = None) -> int:
+def get_random_number_for_right_deck(n: int, seed: int | None = None) -> int:
     """
     Return the number of cards to split into the right sub-deck.
     :param n: one above the highest number that could be returned by this
@@ -49,7 +47,11 @@ def get_random_number_for_right_deck(n: int, seed: int = None) -> int:
 
 # Next, define a function to determine which hand to drop a card from.
 # In[5]:
-def should_drop_from_right_deck(n_left: int, n_right: int, seed: int = None) -> bool:
+def should_drop_from_right_deck(
+    n_left: int,
+    n_right: int,
+    seed: int | None = None,
+) -> bool:
     """
     Determine whether we drop a card from the right or left sub-deck.
 
@@ -98,7 +100,7 @@ def should_drop_from_right_deck(n_left: int, n_right: int, seed: int = None) -> 
 
 # Now we can implement the 'Gilbert–Shannon–Reeds' shuffle.
 # In[6]:
-def shuffle(deck: np.array, seed: int = None) -> np.array:
+def shuffle(deck: np.array, seed: int | None = None) -> np.array:
     """
     Shuffle the input 'deck' using the Gilbert–Shannon–Reeds method.
     :param seq: the input sequence of integers.
@@ -164,7 +166,7 @@ uniform_rel_freqs = np.full(
 # In[16]:
 def calculate_differences(
     num_shuffles: int,
-) -> typing.Tuple[np.float64, np.float64, np.float64]:
+) -> tuple[np.float64, np.float64, np.float64]:
     """
     Calculate differences between observed and uniform distributions.
 

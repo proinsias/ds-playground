@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-# coding: utf-8
 # %%
 """Exploratory Data Analysis."""
 
@@ -7,32 +5,30 @@
 # ## Imports
 
 # %%
+import disease_risk_prediction.constants as c
 import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import plotly.express as px
 import seaborn as sns
-import sklearn.preprocessing
 import sklearn.compose
+import sklearn.preprocessing
 import ydata_profiling
 from category_encoders.one_hot import OneHotEncoder
+from disease_risk_prediction.data import (
+    HealthDataValidator,
+    HealthTrainingDataValidator,
+    fetch_health_data,
+)
+from disease_risk_prediction.preprocess import (
+    get_preprocess_pipeline,
+)
 from IPython.core.interactiveshell import InteractiveShell
 from joblib import Parallel, delayed
 from sklearn.compose import ColumnTransformer
 from sklearn.preprocessing import StandardScaler
 from statsmodels.stats.outliers_influence import variance_inflation_factor
-
-import disease_risk_prediction.constants as c
-from disease_risk_prediction.data import (
-    fetch_health_data,
-    HealthDataValidator,
-    HealthTrainingDataValidator,
-)
-from disease_risk_prediction.preprocess import (
-    get_preprocess_pipeline,
-)
-
 
 # %%
 matplotlib.use("nbagg")
@@ -78,7 +74,7 @@ health_df = fetch_health_data()
 
 
 # %%
-health_df.shape
+print(health_df.shape)
 health_df.head()
 
 # %% [markdown]
@@ -88,7 +84,7 @@ health_df.head()
 valid_health_df = HealthDataValidator().fit_transform(health_df)
 
 # %%
-valid_health_df.shape
+print(valid_health_df.shape)
 valid_health_df.head()
 
 # %% [markdown]

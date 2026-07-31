@@ -21,35 +21,32 @@
 # %%
 from collections import Counter
 
+import disease_risk_prediction.constants as c
 import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 import seaborn as sns
-import sklearn.preprocessing
 import sklearn.compose
 import sklearn.dummy
+import sklearn.preprocessing
 import xgboost as xgb
+from disease_risk_prediction.data import HealthTrainingDataValidator, fetch_health_data
+from disease_risk_prediction.preprocess import (
+    VIFFeatureDropper,
+    get_preprocess_pipeline,
+    get_training_df,
+)
+from disease_risk_prediction.train import build_model, get_X_y_df
 from imblearn.combine import SMOTETomek
 from imblearn.over_sampling import SMOTE
 from imblearn.under_sampling import RandomUnderSampler
 from IPython.core.interactiveshell import InteractiveShell
-
 from sklearn.base import BaseEstimator
-from sklearn.feature_selection import mutual_info_classif, SelectorMixin
+from sklearn.feature_selection import SelectorMixin, mutual_info_classif
 from sklearn.metrics import classification_report
 from sklearn.model_selection import train_test_split
 from sklearn.utils.class_weight import compute_class_weight
-
-import disease_risk_prediction.constants as c
-from disease_risk_prediction.data import fetch_health_data, HealthTrainingDataValidator
-from disease_risk_prediction.preprocess import (
-    get_preprocess_pipeline,
-    get_training_df,
-    VIFFeatureDropper,
-)
-from disease_risk_prediction.train import build_model, get_X_y_df
-
 
 # %%
 matplotlib.use("nbagg")
@@ -94,7 +91,7 @@ InteractiveShell.ast_node_interactivity = "all"
 training_df = get_training_df(None, None)  # Load landed file.
 
 # %%
-training_df.shape
+print(training_df.shape)
 training_df.head()
 
 # %%
@@ -181,7 +178,7 @@ mi = MutualInfoThresholdSelector()
 X_mi = mi.fit_transform(X_vif.to_numpy(), y)
 
 # %%
-X_vif.shape, X_mi.shape
+print(X_vif.shape, X_mi.shape)
 
 # %% [markdown]
 # ## Sample targets

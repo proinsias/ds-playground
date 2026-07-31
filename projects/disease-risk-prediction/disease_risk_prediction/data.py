@@ -373,7 +373,7 @@ class HealthTrainingDataValidator(BaseEstimator, TransformerMixin):
             axis="columns",
         )
 
-        if sorted(list(training_df.columns)) != sorted(c.Y_COLS):
+        if sorted(training_df.columns) != sorted(c.Y_COLS):
             logger.error(
                 "DataFrame has incorrect columns!!!",
             )
@@ -393,9 +393,12 @@ class HealthTrainingDataValidator(BaseEstimator, TransformerMixin):
         Returns:
             Cancer status as a string.
         """
-        if pd.notna(row["chcscnc1"]) and np.isclose(row["chcscnc1"], 1.0):
-            return 1.0
-        elif pd.notna(row["chcocnc1"]) and np.isclose(row["chcocnc1"], 1.0):
+        if (
+            pd.notna(row["chcscnc1"])
+            and np.isclose(row["chcscnc1"], 1.0)
+            or pd.notna(row["chcocnc1"])
+            and np.isclose(row["chcocnc1"], 1.0)
+        ):
             return 1.0
         elif (
             pd.notna(row["chcscnc1"])
