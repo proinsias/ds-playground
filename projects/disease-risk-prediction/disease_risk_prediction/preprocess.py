@@ -39,6 +39,7 @@ class VIFFeatureDropper(
         threshold: float = 5.0,
         n_jobs: int | None = -1,
     ) -> None:
+        """Store the VIF threshold and parallelism settings used by `fit`."""
         self.threshold = threshold
         self.n_jobs = n_jobs
         self.high_vif_features: list[str] = []

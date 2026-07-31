@@ -248,6 +248,17 @@ repos:
       rev: v0.1.11 # Use latest tag on GitHub
       hooks:
           - id: ripsecrets
+            # Excludes notebooks whose committed base64 image/png outputs are
+            # flagged as high-entropy secrets by ripsecrets.
+            exclude: |
+                (?x)^(
+                  projects/gilbert-shannon-reeds/Gilbert-Shannon-Reeds\.ipynb|
+                  projects/gilbert-shannon-reeds/Gilbert-Shannon-Reeds\.html|
+                  projects/heart-disease/1\.0-initial-data-exploration\.ipynb|
+                  projects/heart-disease/1\.1-data-exploration-matplotlib\.ipynb|
+                  projects/heart-disease/1\.2-data-exploration-seaborn\.ipynb|
+                  projects/heart-disease/1\.3-data-exploration-plotly\.ipynb
+                )$
           # uncomment to check additional patterns
           # args:
           # - --additional-pattern 'mytoken*'
@@ -268,3 +279,9 @@ repos:
       hooks:
           - id: lychee
             args: ["--cache", "--suggest"]
+            # Excludes the nbconvert-generated HTML export, which references its own
+            # local bootstrap/font-awesome/custom.css assets that were never committed.
+            exclude: |
+                (?x)^(
+                  projects/gilbert-shannon-reeds/Gilbert-Shannon-Reeds\.html
+                )$

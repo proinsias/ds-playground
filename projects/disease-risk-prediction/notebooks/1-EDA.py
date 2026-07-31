@@ -18,6 +18,7 @@ import sklearn.compose
 import ydata_profiling
 from category_encoders.one_hot import OneHotEncoder
 from IPython.core.interactiveshell import InteractiveShell
+from joblib import Parallel, delayed
 from sklearn.compose import ColumnTransformer
 from sklearn.preprocessing import StandardScaler
 from statsmodels.stats.outliers_influence import variance_inflation_factor
@@ -252,17 +253,17 @@ vif_data = pd.DataFrame(
 )
 
 # %%
-vif.sort_values(by="VIF").reset_index(drop=True)
+vif_data.sort_values(by="VIF").reset_index(drop=True)
 
 # %%
-vif["VIF"].describe()
+vif_data["VIF"].describe()
 
 # %%
-vif["VIF"].hist(bins=50)
+vif_data["VIF"].hist(bins=50)
 
 # %%
 threshold1 = 5
-high_vif_features1 = vif[vif["VIF"] > threshold1]["feature"].tolist()
+high_vif_features1 = vif_data[vif_data["VIF"] > threshold1]["feature"].tolist()
 X_reduced1 = X_preproc.drop(columns=high_vif_features1)
 
 # %%
@@ -324,7 +325,7 @@ preprocessed_df.head()
 # ## EDA of training data
 
 # %%
-profile = ydata_profiling.ProfileReport(training_df, title="Profiling Report")
+profile = ydata_profiling.ProfileReport(preprocessed_df, title="Profiling Report")
 
 # %%
 profile.to_notebook_iframe()

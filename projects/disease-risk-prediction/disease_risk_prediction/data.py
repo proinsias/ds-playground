@@ -169,6 +169,7 @@ class HealthDataValidator(BaseEstimator, TransformerMixin):
         X: pd.DataFrame,
         y: pd.Series | None = None,
     ) -> "HealthDataValidator":
+        """No-op fit, present to satisfy the scikit-learn transformer API."""
         return self  # No fitting needed
 
     def transform(
@@ -311,6 +312,7 @@ class HealthTrainingDataValidator(BaseEstimator, TransformerMixin):
         X: pd.DataFrame,
         y: pd.Series | None = None,
     ) -> "HealthTrainingDataValidator":
+        """No-op fit, present to satisfy the scikit-learn transformer API."""
         return self  # No fitting needed
 
     def transform(

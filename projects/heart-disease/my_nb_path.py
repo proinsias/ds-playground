@@ -49,6 +49,7 @@ from typing import Union
 
 
 def sys_path_append(o: Union[str, os.PathLike]) -> None:
+    """Insert `o` at the front of `sys.path` as a POSIX path, if not already present."""
     posix_path: str = o.as_posix() if isinstance(o, Path) else Path(o).as_posix()
     if posix_path not in sys.path:
         sys.path.insert(0, posix_path)

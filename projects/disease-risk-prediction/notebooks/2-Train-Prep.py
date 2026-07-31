@@ -37,6 +37,7 @@ import umap
 import umap.plot
 from dbscan import DBSCAN
 from IPython.core.interactiveshell import InteractiveShell
+from IPython.display import display
 from sklearn.cluster import KMeans
 from sklearn.decomposition import PCA
 from sklearn.feature_selection import f_classif, mutual_info_classif, SelectKBest
@@ -137,6 +138,7 @@ pd.DataFrame(data=data).assign(
 
 # %%
 def radvix_disease(training_df, disease):
+    """Plot a RadViz projection of `disease`'s features to visualize class separability."""
     X, y, _ = get_X_y_df(training_df, disease)
     _ = radviz(
         X,
@@ -159,6 +161,7 @@ for disease in training_df["disease"].unique():
 
 # %%
 def parallel_coordinates_disease(training_df, disease):
+    """Plot a parallel-coordinates view of `disease`'s features to visualize class separability."""
     X, y, _ = get_X_y_df(training_df, disease)
 
     _ = parallel_coordinates(
@@ -185,6 +188,7 @@ parallel_coordinates_disease(training_df, disease)
 
 # %%
 def f_classif_disease(training_df, disease):
+    """Plot the distribution of per-feature Fisher (F-test) scores for `disease`."""
     X, y, _ = get_X_y_df(training_df, disease)
 
     f_values, _ = f_classif(X, y)
@@ -214,6 +218,7 @@ for disease in training_df["disease"].unique():
 
 # %%
 def mutual_info_classif_disease(training_df, disease):
+    """Plot the distribution of per-feature mutual information scores for `disease`."""
     X, y, _ = get_X_y_df(training_df, disease)
 
     m_values = mutual_info_classif(
@@ -246,6 +251,7 @@ for disease in training_df["disease"].unique():
 
 # %%
 def corr_disease(training_df, disease):
+    """Plot the distribution of per-feature Pearson correlation with the target for `disease`."""
     _, _, disease_df = get_X_y_df(training_df, disease)
 
     corr_df = disease_df.corr()
@@ -267,6 +273,7 @@ for disease in training_df["disease"].unique():
 
 # %%
 def ppscore_disease(training_df, disease):
+    """Print the value counts of per-feature predictive power scores for `disease`."""
     _, _, disease_df = get_X_y_df(training_df, disease)
 
     print(f"{disease}:")
@@ -292,6 +299,7 @@ for disease in training_df["disease"].unique():
 
 # %%
 def kmeans_disease(training_df, disease):
+    """Print the adjusted Rand index between 2-means clusters and true labels for `disease`."""
     X, y, _ = get_X_y_df(training_df, disease)
 
     kmeans = KMeans(n_clusters=2, random_state=c.RANDOM_STATE)
@@ -311,6 +319,7 @@ for disease in training_df["disease"].unique():
 
 # %%
 def sklearn_dbscan_disease(training_df, disease):
+    """Print the adjusted Rand index between scikit-learn DBSCAN clusters and true labels for `disease`."""
     X, y, _ = get_X_y_df(training_df, disease)
 
     model = sklearn.cluster.DBSCAN(eps=1.25, n_jobs=-1)
@@ -332,6 +341,7 @@ for disease in training_df["disease"].unique():
 
 # %%
 def dbscan_disease(training_df, disease):
+    """Print the adjusted Rand index between PCA-reduced `dbscan`-package clusters and true labels for `disease`."""
     X, y, _ = get_X_y_df(training_df, disease)
 
     pca = PCA(n_components=20)
@@ -360,6 +370,7 @@ def dbscan_disease(training_df, disease):
 
 # %%
 def hdbscan_disease(training_df, disease):
+    """Print the adjusted Rand index between PCA-reduced HDBSCAN clusters and true labels for `disease`."""
     X, y, _ = get_X_y_df(training_df, disease)
 
     pca = PCA(n_components=20)
@@ -400,6 +411,7 @@ with warnings.catch_warnings():
 
 
 def pca_disease(training_df, disease):
+    """Plot a 2D PCA projection of `disease`'s features, colored by class."""
     X, y, _ = get_X_y_df(training_df, disease)
 
     pca = PCA(n_components=2)
@@ -427,6 +439,7 @@ for disease in training_df["disease"].unique():
 
 
 def pca_3d_disease(training_df, disease):
+    """Show an interactive 3D PCA projection of `disease`'s features, colored by class."""
     X, y, _ = get_X_y_df(training_df, disease)
 
     # Apply PCA with 3 components
@@ -517,6 +530,7 @@ def pca_3d_disease(training_df, disease):
 
 # %%
 def umap_disease(training_df, disease):
+    """Plot a UMAP embedding of a sampled, top-5-feature subset of `disease`'s data, colored by class."""
     X, y, _ = get_X_y_df(training_df, disease)
 
     train_size = 10**4  # Out of 221397.

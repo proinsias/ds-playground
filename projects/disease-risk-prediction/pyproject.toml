@@ -3,7 +3,7 @@ name = "disease-risk-prediction"
 version = "0.1.0"
 description = "Predict a risk score for common diseases based on input patient data."
 readme = "README.md"
-requires-python = ">=3.10"
+requires-python = ">=3.11"
 dependencies = [
     "bs4>=0.0.2",
     "category-encoders>=2.8.0",
@@ -16,8 +16,7 @@ dependencies = [
     "pyarrow>=19.0.0",
     "pydantic>=2.10.6",
     "scikit-learn>=1.6.1",
-    "tensorflow-macos>=2.16.2",
-    "tensorflow-metal>=1.2.0",
+    "tensorflow>=2.21.0",
     "xgboost>=2.1.4",
 ]
 

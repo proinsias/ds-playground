@@ -1,3 +1,5 @@
+"""Streamlit app for interactive disease risk prediction with SHAP explanations."""
+
 import matplotlib.pyplot as plt
 import numpy as np
 import shap
@@ -9,7 +11,7 @@ from sklearn.model_selection import train_test_split
 import disease_risk_prediction.constants as c
 from disease_risk_prediction.data import HealthTrainingDataValidator, fetch_health_data
 from disease_risk_prediction.preprocess import get_preprocess_pipeline, get_training_df
-from disease_risk_prediction.train import build_model
+from disease_risk_prediction.train import build_model, get_X_y_df
 
 # See TensorFlow version.
 logger.info(f"TensorFlow version: {tf.__version__}")
@@ -29,9 +31,7 @@ ys = HealthTrainingDataValidator().fit_transform(health_df)
 
 training_df = get_training_df(X, ys)
 
-
-# FIXME: Add in from train.py
-
+X_asthma, y_asthma, _ = get_X_y_df(training_df, "asthms1")
 
 X_train, X_test, y_train, y_test = train_test_split(
     X_asthma,

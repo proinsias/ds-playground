@@ -1,4 +1,6 @@
 #!/usr/bin/env python
+"""Simulate and verify the Gilbert-Shannon-Reeds riffle-shuffle model."""
+
 # In[1]:
 import multiprocessing as mp
 import typing
@@ -42,7 +44,7 @@ def get_random_number_for_right_deck(n: int, seed: int = None) -> int:
     """
     random = sklearn.utils.check_random_state(seed=seed)
 
-    return random.randint(low=1, high=n)
+    return random.randint(low=1, high=n)  # nosec B311 -- non-cryptographic shuffle simulation
 
 
 # Next, define a function to determine which hand to drop a card from.
@@ -76,7 +78,7 @@ def should_drop_from_right_deck(n_left: int, n_right: int, seed: int = None) -> 
         # There are cards left in both sub-decks, so pick a
         # sub-deck at random.
         random = sklearn.utils.check_random_state(seed=seed)
-        num = random.randint(low=0, high=2)
+        num = random.randint(low=0, high=2)  # nosec B311 -- non-cryptographic shuffle simulation
         boolean = num == 0
         return boolean
     elif n_left == 0 and n_right > 0:

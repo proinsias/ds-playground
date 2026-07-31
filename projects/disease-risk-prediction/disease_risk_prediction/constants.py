@@ -46,7 +46,7 @@ Y_COLS = [
 ]
 
 US_STATES_COORDINATES = {
-    # https://inkplant.com/code/state-latitudes-longitudes
+    # https://web.archive.org/web/20250302044330/https://inkplant.com/code/state-latitudes-longitudes
     "Alabama": [32.806671, -86.791130],
     "Alaska": [61.370716, -152.404419],
     "Arizona": [33.729759, -111.431221],
