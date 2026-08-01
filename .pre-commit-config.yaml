@@ -285,7 +285,7 @@ repos:
       rev: v0.15.1
       hooks:
           - id: lychee
-            args: ["--cache", "--suggest"]
+            args: ["--config", "lychee.toml"]
             # Excludes the nbconvert-generated HTML export, which references its own
             # local bootstrap/font-awesome/custom.css assets that were never committed.
             exclude: |
