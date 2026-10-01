@@ -60,12 +60,32 @@ pull_request_rules:
       merge:
         method: squash
 
+  - name: auto-merge dependency bot updates when CI passes
+    # No human review required: merge as soon as every CI check has finished
+    # and none failed. Mergify re-evaluates on each check status change.
+    conditions:
+      - base = main
+      - or:
+          - author = dependabot[bot]
+          - author = renovate[bot]
+      - label != wip
+      - "#changes-requested-reviews-by = 0"
+      - "#check-failure = 0"
+      - "#check-pending = 0"
+      - "#check-stale = 0"
+    actions:
+      merge:
+        method: squash
 
 merge_protections:
   - name: Require approval before merging to main
     if:
       - base = main
     success_conditions:
-      - "#approved-reviews-by >= 1"
+      # Dependency bots are exempt from the manual review requirement.
+      - or:
+          - "#approved-reviews-by >= 1"
+          - author = dependabot[bot]
+          - author = renovate[bot]
       - label != wip
       - "#changes-requested-reviews-by = 0"
