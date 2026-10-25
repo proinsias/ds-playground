@@ -54,7 +54,7 @@ repos:
     # General
 
     - repo: https://github.com/sirosen/texthooks
-      rev: 0.7.1
+      rev: 1.0.0
       hooks:
           - id: fix-smartquotes
           - id: fix-ligatures
@@ -75,7 +75,7 @@ repos:
     # Python
 
     - repo: https://github.com/astral-sh/uv-pre-commit
-      rev: 0.12.1
+      rev: 0.13.5
       hooks:
           # Keep uv.lock file up to date
           - id: uv-lock
@@ -163,7 +163,7 @@ repos:
           - id: deadcode
 
     - repo: https://github.com/astral-sh/ruff-pre-commit
-      rev: "v0.16.1"
+      rev: "v0.17.2"
       hooks:
           - id: ruff-check
             args: [--fix, --exit-non-zero-on-fix]
@@ -218,7 +218,7 @@ repos:
     # SQL
 
     - repo: https://github.com/sqlfluff/sqlfluff
-      rev: 4.2.2
+      rev: 4.4.0
       hooks:
           - id: sqlfluff-lint
           # For dbt projects, this installs the dbt "extras".
@@ -245,7 +245,7 @@ repos:
             exclude: .git/COMMIT_EDITMSG
 
     - repo: https://github.com/sirosen/check-jsonschema
-      rev: 0.37.4
+      rev: 0.38.2
       hooks:
           - id: check-github-actions
           - id: check-github-workflows
@@ -277,7 +277,7 @@ repos:
           - id: actionlint
 
     - repo: https://github.com/MarcoGorelli/cython-lint
-      rev: v0.21.0
+      rev: v0.22.0
       hooks:
           - id: cython-lint
 
