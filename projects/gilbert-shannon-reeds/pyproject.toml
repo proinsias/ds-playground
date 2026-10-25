@@ -11,7 +11,9 @@ classifiers = [
 ]
 
 dependencies = [
+    "certifi>=2026.10.19",  # PYSEC-2026-4320.
     "ds-utils",
+    "pillow>=13.0.0; python_version >= '3.11'",  # CVE-2026-112390 and others; 13.x needs Python 3.11+.
     "toml>=0.10.2",
     "ipykernel>=6.16.1",
     "ipython>=8.5.0",
