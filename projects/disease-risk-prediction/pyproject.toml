@@ -7,15 +7,19 @@ requires-python = ">=3.11"
 dependencies = [
     "bs4>=0.0.2",
     "category-encoders>=2.8.0",
+    "certifi>=2026.10.19",  # PYSEC-2026-4320.
+    "gitpython>=3.2.1",  # CVE-2026-114145.
     "imblearn>=0.0",
     "ipywidgets>=8.1.5",
     "keras>=3.8.0",
     "loguru>=0.7.3",
     "pandas>=2.2.3",
     "pandera>=0.22.1",
+    "pillow>=13.0.0",  # CVE-2026-112390 and others.
     "pyarrow>=19.0.0",
     "pydantic>=2.10.6",
     "scikit-learn>=1.6.1",
+    "setuptools>=84.1.0",  # GHSA-xmj3-9gf7-h52w.
     "tensorflow>=2.21.0",
     "xgboost>=2.1.4",
 ]
