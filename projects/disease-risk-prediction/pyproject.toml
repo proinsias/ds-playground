@@ -3,7 +3,7 @@ name = "disease-risk-prediction"
 version = "0.1.0"
 description = "Predict a risk score for common diseases based on input patient data."
 readme = "README.md"
-requires-python = ">=3.11"
+requires-python = ">=3.11.5"  # soupsieve>=4 (GHSA-7g44-g9rc-x53w and others) needs 3.11.5.
 dependencies = [
     "bs4>=0.0.2",
     "category-encoders>=2.8.0",
