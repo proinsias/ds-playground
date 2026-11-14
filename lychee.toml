@@ -7,7 +7,10 @@ accept = ["100..=103", "200..=299", "403"]
 cache = true
 
 # Exclude URLs and mail addresses from checking (supports regex).
-# exclude = ['^https://www.linkedin.com']
+exclude = [
+    # prek --repo-exclude-tag argument in .pre-commit-config.yaml, not a real URL.
+    'lycheeverse/lychee=nightly$',
+]
 
 exclude_loopback = true
 
